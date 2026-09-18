@@ -1,5 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import TextShimmer from '../UI/TextShimmer';
+import NumberTicker from '../UI/NumberTicker';
 
 export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -130,7 +132,9 @@ export default function Hero() {
 
         {/* Main heading */}
         <h1 className="comic-heading text-4xl sm:text-5xl md:text-7xl lg:text-8xl text-white mb-4 leading-tight">
-          <span className="text-comic-red">DEADPOOL</span>{' '}
+          <TextShimmer className="text-comic-red" duration={3} shimmerColor="rgba(196, 30, 42, 0.3)">
+            DEADPOOL
+          </TextShimmer>{' '}
           <span className="text-white">CREW</span>
         </h1>
 
@@ -158,15 +162,21 @@ export default function Hero() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 md:gap-8 max-w-lg mx-auto">
           <div className="text-center">
-            <div className="text-2xl md:text-4xl font-[var(--font-comic-display)] text-comic-red">250+</div>
+            <div className="text-2xl md:text-4xl font-[var(--font-comic-display)] text-comic-red">
+              <NumberTicker value={250} suffix="+" />
+            </div>
             <div className="text-[10px] md:text-xs font-bold text-white/70 tracking-wider mt-1">ACTIVE MEMBERS</div>
           </div>
           <div className="text-center border-x border-white/20">
-            <div className="text-2xl md:text-4xl font-[var(--font-comic-display)] text-comic-red">06</div>
+            <div className="text-2xl md:text-4xl font-[var(--font-comic-display)] text-comic-red">
+              <NumberTicker value={6} />
+            </div>
             <div className="text-[10px] md:text-xs font-bold text-white/70 tracking-wider mt-1">CREW DOMAINS</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl md:text-4xl font-[var(--font-comic-display)] text-comic-red">01</div>
+            <div className="text-2xl md:text-4xl font-[var(--font-comic-display)] text-comic-red">
+              <NumberTicker value={1} />
+            </div>
             <div className="text-[10px] md:text-xs font-bold text-white/70 tracking-wider mt-1">SHARED UNIVERSE</div>
           </div>
         </div>

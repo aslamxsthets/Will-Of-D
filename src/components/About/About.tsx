@@ -1,3 +1,5 @@
+import BlurFade from '../UI/BlurFade';
+
 export default function About() {
   const panels = [
     {
@@ -43,8 +45,8 @@ export default function About() {
         {/* Comic panels grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           {panels.map((panel, index) => (
+            <BlurFade key={panel.title} delay={index * 100} direction="up">
             <div
-              key={panel.title}
               className="comic-panel p-6 md:p-8 relative group overflow-hidden"
             >
               {/* Background halftone */}
@@ -72,6 +74,7 @@ export default function About() {
               <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-white/20" />
               <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-white/10" />
             </div>
+            </BlurFade>
           ))}
         </div>
 

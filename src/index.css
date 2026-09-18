@@ -394,6 +394,11 @@ body {
   50% { box-shadow: 0 0 0 10px rgba(196, 30, 42, 0); }
 }
 
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   25% { transform: translateX(-2px) rotate(-1deg); }
