@@ -4,7 +4,7 @@ export interface Domain {
   tagline: string;
   description: string;
   items: string[];
-  icon: string;
+  iconLabel: string;
   color: string;
 }
 
@@ -15,7 +15,7 @@ export const domains: Domain[] = [
     tagline: 'Build it. Break it. Fix it. Repeat.',
     description: 'The backbone of the crew. From web development to cybersecurity, AI/ML to cloud computing — this is where ideas become reality.',
     items: ['Development', 'Cybersecurity', 'AI/ML', 'Cloud', 'Technical Projects'],
-    icon: '⚡',
+    iconLabel: 'TC',
     color: '#c41e2a',
   },
   {
@@ -24,7 +24,7 @@ export const domains: Domain[] = [
     tagline: 'Make ideas impossible to ignore.',
     description: 'Where aesthetics meet purpose. Designing interfaces, brands, and visual experiences that demand attention.',
     items: ['Graphic Design', 'UI/UX', 'Visual Design', 'Branding', 'Creative Direction'],
-    icon: '🎨',
+    iconLabel: 'CR',
     color: '#e91e63',
   },
   {
@@ -33,7 +33,7 @@ export const domains: Domain[] = [
     tagline: 'If it happened, we probably need a picture.',
     description: 'Capturing moments, creating content, and telling the crew\'s story through visual media.',
     items: ['Photography', 'Videography', 'Social Media', 'Visual Coverage', 'Media Production'],
-    icon: '📸',
+    iconLabel: 'MD',
     color: '#9c27b0',
   },
   {
@@ -42,7 +42,7 @@ export const domains: Domain[] = [
     tagline: 'Someone has to make the chaos organized.',
     description: 'Turning ambitious ideas into executed reality. Planning, coordinating, and delivering experiences.',
     items: ['Planning', 'Coordination', 'Hosting', 'Event Execution', 'Operations'],
-    icon: '🎯',
+    iconLabel: 'EV',
     color: '#ff5722',
   },
   {
@@ -51,7 +51,7 @@ export const domains: Domain[] = [
     tagline: 'Ideas are great. Documented ideas are better.',
     description: 'Researching, writing, and sharing knowledge. Making sure what we learn doesn\'t stay locked in our heads.',
     items: ['Writing', 'Documentation', 'Research', 'Technical Content', 'Knowledge Sharing'],
-    icon: '📝',
+    iconLabel: 'CT',
     color: '#2196f3',
   },
   {
@@ -60,7 +60,7 @@ export const domains: Domain[] = [
     tagline: 'A crew works better together.',
     description: 'Building connections, fostering collaboration, and making sure everyone feels like they belong.',
     items: ['Collaboration', 'Peer Learning', 'Networking', 'Team Activities', 'Community Building'],
-    icon: '🤝',
+    iconLabel: 'CM',
     color: '#4caf50',
   },
 ];
@@ -69,26 +69,26 @@ export const recruitmentRoles = [
   {
     team: 'TECHNICAL TEAM',
     roles: ['Developers', 'Cybersecurity', 'AI/ML', 'Cloud'],
-    icon: '⚡',
+    iconLabel: 'TC',
   },
   {
     team: 'CREATIVE TEAM',
     roles: ['Design', 'UI/UX', 'Graphics'],
-    icon: '🎨',
+    iconLabel: 'CR',
   },
   {
     team: 'MEDIA TEAM',
     roles: ['Photography', 'Videography', 'Social Media'],
-    icon: '📸',
+    iconLabel: 'MD',
   },
   {
     team: 'CONTENT TEAM',
     roles: ['Writing', 'Documentation', 'Research'],
-    icon: '📝',
+    iconLabel: 'CT',
   },
   {
     team: 'MANAGEMENT TEAM',
     roles: ['Planning', 'Hosting', 'Coordination'],
-    icon: '🎯',
+    iconLabel: 'EV',
   },
 ];

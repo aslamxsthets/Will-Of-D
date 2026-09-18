@@ -1,4 +1,5 @@
 import { recruitmentRoles } from '../../data/domains';
+import DomainIcon from '../UI/DomainIcon';
 
 export default function Recruitment() {
   const scrollToForm = () => {
@@ -6,7 +7,7 @@ export default function Recruitment() {
   };
 
   return (
-    <section id="recruitment" className="relative py-20 md:py-32 px-4 overflow-hidden" style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #0f0505 50%, #0a0a0a 100%)' }}>
+    <section id="recruitment" className="relative py-20 md:py-32 px-4 overflow-hidden bg-transparent">
       {/* Background */}
       <div className="absolute inset-0 action-lines opacity-5" />
       <div className="ink-splatter top-[30%] left-[5%] w-56 h-56 opacity-20" />
@@ -51,7 +52,9 @@ export default function Recruitment() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             {recruitmentRoles.map((team) => (
               <div key={team.team} className="comic-panel p-4 text-center">
-                <div className="text-2xl mb-2">{team.icon}</div>
+                <div className="flex justify-center mb-3">
+                  <DomainIcon label={team.iconLabel} color="#c41e2a" size="md" />
+                </div>
                 <h4 className="text-sm font-[var(--font-comic-display)] text-comic-red tracking-wider mb-2">
                   {team.team}
                 </h4>

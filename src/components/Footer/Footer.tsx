@@ -6,7 +6,10 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative bg-comic-black border-t-2 border-comic-red/30">
+    <footer className="relative bg-comic-black border-t-2 border-comic-red/30 z-20">
+      {/* Solid background to cover the fixed Deadpool image */}
+      <div className="absolute inset-0 bg-comic-black" />
+      
       {/* Back cover section */}
       <div className="relative py-16 md:py-24 px-4 text-center overflow-hidden">
         <div className="absolute inset-0 halftone opacity-5" />

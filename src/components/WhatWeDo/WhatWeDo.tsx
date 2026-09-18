@@ -1,8 +1,9 @@
 import { domains } from '../../data/domains';
+import DomainIcon from '../UI/DomainIcon';
 
 export default function WhatWeDo() {
   return (
-    <section id="what-we-do" className="relative py-20 md:py-32 px-4 overflow-hidden" style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #111 50%, #0a0a0a 100%)' }}>
+    <section id="what-we-do" className="relative py-20 md:py-32 px-4 overflow-hidden bg-transparent">
       {/* Background */}
       <div className="absolute inset-0 action-lines opacity-10" />
       <div className="ink-splatter top-[20%] right-[5%] w-48 h-48 opacity-20" />
@@ -46,7 +47,9 @@ export default function WhatWeDo() {
               </div>
 
               {/* Icon */}
-              <div className="text-3xl mb-4 transform group-hover:scale-110 transition-transform duration-300">{domain.icon}</div>
+              <div className="mb-4 transform group-hover:scale-110 transition-transform duration-300">
+                <DomainIcon label={domain.iconLabel} color={domain.color} size="lg" />
+              </div>
 
               {/* Title */}
               <h3

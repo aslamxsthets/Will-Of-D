@@ -189,7 +189,11 @@ export default function RecruitmentForm() {
     return (
       <div className="max-w-2xl mx-auto">
         <div className="comic-panel p-8 md:p-12 text-center">
-          <div className="text-5xl mb-6">✅</div>
+          <div className="w-16 h-16 mx-auto mb-6 border-4 border-green-500 rounded-full flex items-center justify-center">
+            <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
           <h3 className="comic-heading text-2xl md:text-3xl text-comic-red mb-4">
             APPLICATION RECEIVED!
           </h3>
@@ -234,7 +238,11 @@ export default function RecruitmentForm() {
     return (
       <div className="max-w-2xl mx-auto">
         <div className="comic-panel p-8 md:p-12 text-center">
-          <div className="text-5xl mb-6">⚠️</div>
+          <div className="w-16 h-16 mx-auto mb-6 border-4 border-comic-red rounded-full flex items-center justify-center">
+            <svg className="w-8 h-8 text-comic-red" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
           <h3 className="comic-heading text-2xl md:text-3xl text-comic-red mb-4">
             SOMETHING WENT WRONG.
           </h3>

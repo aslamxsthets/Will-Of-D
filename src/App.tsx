@@ -23,6 +23,83 @@ function App() {
     return () => window.removeEventListener('resize', check);
   }, []);
 
+  // Fixed Deadpool background that persists throughout scroll
+  const FixedDeadpoolBackground = () => {
+    const [opacity, setOpacity] = useState(1);
+
+    useEffect(() => {
+      const handleScroll = () => {
+        const scrollY = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const footerStart = documentHeight - windowHeight * 1.5; // Start fading 1.5 viewports before end
+        
+        if (scrollY > footerStart) {
+          const fadeProgress = (scrollY - footerStart) / (windowHeight * 0.5);
+          setOpacity(Math.max(0, 1 - fadeProgress));
+        } else {
+          setOpacity(1);
+        }
+      };
+
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    return (
+      <div 
+        className="fixed inset-0 z-0 pointer-events-none transition-opacity duration-300" 
+        style={{ opacity }}
+        aria-hidden="true"
+      >
+        {/* Deadpool silhouette */}
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-50"
+          style={{
+            backgroundImage: 'url(https://image.qwenlm.ai/generated-images/785ebe06-72cd-4148-b4c7-c2725ffb51ff/_result.png)',
+            backgroundPosition: 'center 20%',
+            backgroundSize: '80% auto',
+            backgroundRepeat: 'no-repeat',
+          }}
+        />
+
+        {/* Red energy glow from blades */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: 'radial-gradient(ellipse at 50% 35%, rgba(196, 30, 42, 0.25) 0%, rgba(196, 30, 42, 0.1) 25%, transparent 55%)',
+            animation: 'blade-glow-pulse 3s ease-in-out infinite',
+          }}
+        />
+
+        {/* Blade shine overlay */}
+        <div className="absolute inset-0 blade-shine-overlay" />
+        <div className="absolute inset-0 blade-glow-overlay" />
+
+        {/* Light streak */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div
+            className="absolute top-0 left-1/2 w-1 h-full opacity-0"
+            style={{
+              background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.5), transparent)',
+              animation: 'light-streak 6s ease-in-out infinite',
+              transform: 'translateX(-50%) rotate(15deg)',
+            }}
+          />
+        </div>
+
+        {/* Sparkles on blades */}
+        <div className="blade-sparkle" />
+        <div className="blade-sparkle" />
+        <div className="blade-sparkle" />
+        <div className="blade-sparkle" />
+
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-comic-black/60" />
+      </div>
+    );
+  };
+
   const getSectionStyle = useCallback((id: string): React.CSSProperties => {
     if (reducedMotion) return {};
     if (isMobile) {
@@ -57,10 +134,13 @@ function App() {
   }, [registerSection]);
 
   return (
-    <div className="min-h-screen bg-comic-black">
+    <div className="min-h-screen bg-comic-black relative">
+      {/* Fixed Deadpool background visible throughout scroll */}
+      <FixedDeadpoolBackground />
+      
       <Navbar />
       
-      <main>
+      <main className="relative z-10">
         {/* Hero - Page 1 */}
         <div
           ref={sectionRef('hero')}
@@ -134,7 +214,7 @@ function App() {
         </div>
 
         {/* Recruitment Form - Part of Page 5 */}
-        <section id="recruitment-form" className="relative py-16 md:py-24 px-4 overflow-hidden" style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #0d0505 50%, #0a0a0a 100%)' }}>
+        <section id="recruitment-form" className="relative py-16 md:py-24 px-4 overflow-hidden bg-transparent">
           <div className="absolute inset-0 halftone opacity-5" />
           <div className="page-edge" />
           <div className="relative max-w-4xl mx-auto">

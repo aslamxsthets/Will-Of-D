@@ -2,7 +2,7 @@ import { teamMembers } from '../../data/team';
 
 export default function Team() {
   return (
-    <section id="team" className="relative py-20 md:py-32 px-4 comic-page overflow-hidden">
+    <section id="team" className="relative py-20 md:py-32 px-4 bg-transparent overflow-hidden">
       <div className="absolute inset-0 halftone opacity-5" />
       
       <div className="relative max-w-6xl mx-auto">

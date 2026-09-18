@@ -23,9 +23,9 @@ export default function About() {
   ];
 
   return (
-    <section id="about" className="relative py-20 md:py-32 px-4 comic-page overflow-hidden">
+    <section id="about" className="relative py-20 md:py-32 px-4 bg-transparent overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute top-0 left-0 w-full h-full halftone opacity-10" />
+      <div className="absolute top-0 left-0 w-full h-full halftone opacity-5" />
       
       <div className="relative max-w-6xl mx-auto">
         {/* Section header */}

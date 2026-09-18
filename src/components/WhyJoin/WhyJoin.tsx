@@ -1,45 +1,47 @@
+import DomainIcon from '../UI/DomainIcon';
+
 export default function WhyJoin() {
   const reasons = [
     {
       title: 'REAL PROJECTS',
       description: 'Work on practical projects instead of only learning theory.',
-      icon: '🔧',
+      iconLabel: 'RP',
       color: '#c41e2a',
     },
     {
       title: 'LEARN',
       description: 'Develop technical and creative skills through hands-on experiences.',
-      icon: '📚',
+      iconLabel: 'LR',
       color: '#2196f3',
     },
     {
       title: 'COMPETITIONS',
       description: 'Prepare for hackathons, CTFs, competitions, and challenges.',
-      icon: '🏆',
+      iconLabel: 'CP',
       color: '#ffd700',
     },
     {
       title: 'NETWORK',
       description: 'Meet students with different interests and skill sets.',
-      icon: '🌐',
+      iconLabel: 'NW',
       color: '#9c27b0',
     },
     {
       title: 'GROW',
       description: 'Build confidence, communication skills, leadership, and technical ability.',
-      icon: '🌱',
+      iconLabel: 'GR',
       color: '#4caf50',
     },
     {
       title: 'FIND YOUR PLACE',
       description: 'Explore different domains and discover where you fit into the crew.',
-      icon: '🎯',
+      iconLabel: 'FP',
       color: '#ff5722',
     },
   ];
 
   return (
-    <section id="why-join" className="relative py-20 md:py-32 px-4 comic-page overflow-hidden">
+    <section id="why-join" className="relative py-20 md:py-32 px-4 bg-transparent overflow-hidden">
       <div className="absolute inset-0 halftone opacity-5" />
       
       <div className="relative max-w-6xl mx-auto">
@@ -70,7 +72,9 @@ export default function WhyJoin() {
               </div>
 
               {/* Icon */}
-              <div className="text-3xl mb-4">{reason.icon}</div>
+              <div className="mb-4">
+                <DomainIcon label={reason.iconLabel} color={reason.color} size="lg" />
+              </div>
 
               {/* Title */}
               <h3 className="text-base md:text-lg font-[var(--font-comic-display)] tracking-wider mb-2" style={{ color: reason.color }}>
