@@ -72,13 +72,47 @@ export default function Hero() {
     >
       {/* Background layers */}
       <div className="absolute inset-0 bg-comic-black" />
+      
+      {/* Deadpool silhouette background */}
       <div 
-        className="absolute inset-0 opacity-40 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: 'url(https://image.qwenlm.ai/generated-images/9f6dde5d-d767-4a8f-8e4b-397762605fc5/_result.png)' }}
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-70"
+        style={{ 
+          backgroundImage: 'url(https://image.qwenlm.ai/generated-images/785ebe06-72cd-4148-b4c7-c2725ffb51ff/_result.png)',
+          backgroundPosition: 'center 30%'
+        }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-comic-black/60 via-transparent to-comic-black" />
-      <div className="absolute inset-0 halftone opacity-30" />
-      <div className="absolute inset-0 action-lines opacity-20" />
+      
+      {/* Red energy glow from blades */}
+      <div className="absolute inset-0 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse at 50% 45%, rgba(196, 30, 42, 0.3) 0%, rgba(196, 30, 42, 0.1) 30%, transparent 60%)',
+        animation: 'blade-glow-pulse 3s ease-in-out infinite'
+      }} />
+      
+      {/* Blade shine overlay effects */}
+      <div className="absolute inset-0 blade-shine-overlay pointer-events-none" />
+      <div className="absolute inset-0 blade-glow-overlay pointer-events-none" />
+      
+      {/* Light streak effect */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-0 left-1/2 w-1 h-full opacity-0" style={{
+          background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.6), transparent)',
+          animation: 'light-streak 6s ease-in-out infinite',
+          transform: 'translateX(-50%) rotate(15deg)'
+        }} />
+      </div>
+      
+      {/* Sparkle effects on blades */}
+      <div className="blade-sparkle" />
+      <div className="blade-sparkle" />
+      <div className="blade-sparkle" />
+      <div className="blade-sparkle" />
+      
+      {/* Gradient overlays for text readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-comic-black/70 via-comic-black/40 to-comic-black/90" />
+      <div className="absolute inset-0 bg-gradient-to-r from-comic-black/60 via-transparent to-comic-black/60" />
+      
+      <div className="absolute inset-0 halftone opacity-20" />
+      <div className="absolute inset-0 action-lines opacity-15" />
       
       {/* Decorative ink splatters */}
       <div className="ink-splatter top-[10%] left-[5%] w-40 h-40 opacity-40" />

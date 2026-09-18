@@ -474,3 +474,148 @@ body {
   );
   pointer-events: none;
 }
+
+/* Blade shine effects for hero background */
+@keyframes blade-shimmer {
+  0% {
+    transform: translateX(-150%) translateY(-150%) rotate(45deg);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.8;
+  }
+  70% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(150%) translateY(150%) rotate(45deg);
+    opacity: 0;
+  }
+}
+
+@keyframes blade-glow-pulse {
+  0%, 100% {
+    opacity: 0.2;
+    filter: blur(15px);
+  }
+  50% {
+    opacity: 0.5;
+    filter: blur(25px);
+  }
+}
+
+@keyframes blade-sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes light-streak {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-100%) rotate(15deg);
+  }
+  40% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  60% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(100%) rotate(15deg);
+  }
+}
+
+.blade-shine-overlay {
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.15) 48%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0.15) 52%,
+    transparent 60%
+  );
+  background-size: 200% 200%;
+  animation: blade-shimmer 5s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
+.blade-glow-overlay {
+  background: radial-gradient(
+    ellipse at 50% 50%,
+    rgba(196, 30, 42, 0.5) 0%,
+    rgba(196, 30, 42, 0.3) 25%,
+    rgba(255, 100, 100, 0.2) 40%,
+    transparent 70%
+  );
+  animation: blade-glow-pulse 3s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
+/* Sparkle effects on blades */
+.blade-sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8),
+              0 0 20px 4px rgba(196, 30, 42, 0.6);
+  animation: blade-sparkle 2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.blade-sparkle:nth-child(1) {
+  top: 30%;
+  left: 45%;
+  animation-delay: 0s;
+}
+
+.blade-sparkle:nth-child(2) {
+  top: 50%;
+  left: 55%;
+  animation-delay: 0.7s;
+}
+
+.blade-sparkle:nth-child(3) {
+  top: 40%;
+  left: 50%;
+  animation-delay: 1.4s;
+}
+
+.blade-sparkle:nth-child(4) {
+  top: 60%;
+  left: 48%;
+  animation-delay: 2.1s;
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .blade-shine-overlay,
+  .blade-glow-overlay,
+  .blade-sparkle {
+    animation: none !important;
+  }
+  
+  .blade-shine-overlay {
+    opacity: 0.3;
+  }
+  
+  .blade-glow-overlay {
+    opacity: 0.4;
+  }
+  
+  .blade-sparkle {
+    opacity: 0.6;
+    transform: scale(0.8);
+  }
+}
