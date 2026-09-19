@@ -52,50 +52,35 @@ function App() {
         style={{ opacity }}
         aria-hidden="true"
       >
-        {/* Deadpool silhouette */}
+        {/* Deadpool background - positioned on right side */}
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-50"
+          className="absolute inset-0 bg-cover bg-right opacity-60"
           style={{
-            backgroundImage: 'url(https://image.qwenlm.ai/generated-images/785ebe06-72cd-4148-b4c7-c2725ffb51ff/_result.png)',
-            backgroundPosition: 'center 20%',
-            backgroundSize: '80% auto',
+            backgroundImage: 'url(https://image.qwenlm.ai/generated-images/a363cbda-74c1-4089-870f-1ef45cbbd270/_result.png)',
+            backgroundPosition: 'right center',
+            backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',
           }}
         />
 
-        {/* Red energy glow from blades */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'radial-gradient(ellipse at 50% 35%, rgba(196, 30, 42, 0.25) 0%, rgba(196, 30, 42, 0.1) 25%, transparent 55%)',
-            animation: 'blade-glow-pulse 3s ease-in-out infinite',
-          }}
-        />
-
-        {/* Blade shine overlay */}
-        <div className="absolute inset-0 blade-shine-overlay" />
-        <div className="absolute inset-0 blade-glow-overlay" />
-
-        {/* Light streak */}
+        {/* Katana blade glow effects */}
+        <div className="absolute inset-0 katana-glow-overlay" />
+        <div className="absolute inset-0 katana-shimmer-overlay" />
+        
+        {/* Blade edge light streaks */}
         <div className="absolute inset-0 overflow-hidden">
-          <div
-            className="absolute top-0 left-1/2 w-1 h-full opacity-0"
-            style={{
-              background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.5), transparent)',
-              animation: 'light-streak 6s ease-in-out infinite',
-              transform: 'translateX(-50%) rotate(15deg)',
-            }}
-          />
+          <div className="katana-light-streak-1" />
+          <div className="katana-light-streak-2" />
         </div>
 
         {/* Sparkles on blades */}
-        <div className="blade-sparkle" />
-        <div className="blade-sparkle" />
-        <div className="blade-sparkle" />
-        <div className="blade-sparkle" />
+        <div className="katana-sparkle" style={{ top: '40%', right: '35%' }} />
+        <div className="katana-sparkle" style={{ top: '45%', right: '38%' }} />
+        <div className="katana-sparkle" style={{ top: '50%', right: '36%' }} />
+        <div className="katana-sparkle" style={{ top: '42%', right: '40%' }} />
 
         {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-comic-black/60" />
+        <div className="absolute inset-0 bg-comic-black/70" />
       </div>
     );
   };

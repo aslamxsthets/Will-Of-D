@@ -5,37 +5,37 @@ export default function WhyJoin() {
     {
       title: 'REAL PROJECTS',
       description: 'Work on practical projects instead of only learning theory.',
-      iconLabel: 'RP',
+      iconName: 'Wrench',
       color: '#c41e2a',
     },
     {
       title: 'LEARN',
       description: 'Develop technical and creative skills through hands-on experiences.',
-      iconLabel: 'LR',
+      iconName: 'BookOpen',
       color: '#2196f3',
     },
     {
       title: 'COMPETITIONS',
       description: 'Prepare for hackathons, CTFs, competitions, and challenges.',
-      iconLabel: 'CP',
+      iconName: 'Trophy',
       color: '#ffd700',
     },
     {
       title: 'NETWORK',
       description: 'Meet students with different interests and skill sets.',
-      iconLabel: 'NW',
+      iconName: 'Globe',
       color: '#9c27b0',
     },
     {
       title: 'GROW',
       description: 'Build confidence, communication skills, leadership, and technical ability.',
-      iconLabel: 'GR',
+      iconName: 'TrendingUp',
       color: '#4caf50',
     },
     {
       title: 'FIND YOUR PLACE',
       description: 'Explore different domains and discover where you fit into the crew.',
-      iconLabel: 'FP',
+      iconName: 'Target',
       color: '#ff5722',
     },
   ];
@@ -73,7 +73,7 @@ export default function WhyJoin() {
 
               {/* Icon */}
               <div className="mb-4">
-                <DomainIcon label={reason.iconLabel} color={reason.color} size="lg" />
+                <DomainIcon iconName={reason.iconName} color={reason.color} size="lg" />
               </div>
 
               {/* Title */}

@@ -1,19 +1,58 @@
+import { 
+  Code2, 
+  Palette, 
+  Camera, 
+  Calendar, 
+  FileText, 
+  Users,
+  Wrench,
+  BookOpen,
+  Trophy,
+  Globe,
+  TrendingUp,
+  Target,
+  type LucideIcon 
+} from 'lucide-react';
+
 interface DomainIconProps {
-  label: string;
+  iconName: string;
   color?: string;
   size?: 'sm' | 'md' | 'lg';
 }
 
-export default function DomainIcon({ label, color = '#c41e2a', size = 'md' }: DomainIconProps) {
+const iconMap: Record<string, LucideIcon> = {
+  Code2,
+  Palette,
+  Camera,
+  Calendar,
+  FileText,
+  Users,
+  Wrench,
+  BookOpen,
+  Trophy,
+  Globe,
+  TrendingUp,
+  Target,
+};
+
+export default function DomainIcon({ iconName, color = '#c41e2a', size = 'md' }: DomainIconProps) {
   const sizeClasses = {
-    sm: 'w-8 h-8 text-xs',
-    md: 'w-12 h-12 text-sm',
-    lg: 'w-16 h-16 text-base',
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16',
   };
+
+  const iconSizes = {
+    sm: 16,
+    md: 24,
+    lg: 32,
+  };
+
+  const IconComponent = iconMap[iconName] || Code2;
 
   return (
     <div
-      className={`${sizeClasses[size]} flex items-center justify-center font-[var(--font-comic-display)] tracking-wider border-2 relative overflow-hidden`}
+      className={`${sizeClasses[size]} flex items-center justify-center border-2 relative overflow-hidden`}
       style={{
         borderColor: color,
         color: color,
@@ -25,7 +64,7 @@ export default function DomainIcon({ label, color = '#c41e2a', size = 'md' }: Do
         className="absolute top-0 left-0 w-2 h-2"
         style={{ backgroundColor: color }}
       />
-      <span className="relative z-10">{label}</span>
+      <IconComponent size={iconSizes[size]} className="relative z-10" />
     </div>
   );
 }

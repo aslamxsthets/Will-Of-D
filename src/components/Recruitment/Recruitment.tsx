@@ -53,7 +53,7 @@ export default function Recruitment() {
             {recruitmentRoles.map((team) => (
               <div key={team.team} className="comic-panel p-4 text-center">
                 <div className="flex justify-center mb-3">
-                  <DomainIcon label={team.iconLabel} color="#c41e2a" size="md" />
+                  <DomainIcon iconName={team.iconName} color="#c41e2a" size="md" />
                 </div>
                 <h4 className="text-sm font-[var(--font-comic-display)] text-comic-red tracking-wider mb-2">
                   {team.team}

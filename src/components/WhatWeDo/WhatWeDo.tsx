@@ -48,7 +48,7 @@ export default function WhatWeDo() {
 
               {/* Icon */}
               <div className="mb-4 transform group-hover:scale-110 transition-transform duration-300">
-                <DomainIcon label={domain.iconLabel} color={domain.color} size="lg" />
+                <DomainIcon iconName={domain.iconName} color={domain.color} size="lg" />
               </div>
 
               {/* Title */}
