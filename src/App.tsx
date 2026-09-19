@@ -52,22 +52,23 @@ function App() {
         style={{ opacity }}
         aria-hidden="true"
       >
-        {/* Deadpool background - full image visible, head movement only */}
+        {/* Deadpool background - full viewport with 3D effect */}
         <div
-          className="absolute inset-0 opacity-75 deadpool-head-move"
+          className="absolute inset-0 deadpool-3d-bg"
           style={{
             backgroundImage: 'url(https://imgs.search.brave.com/n90iKC1pIk3cs6yVOOZKXo9H6x4DRX5GXuEycmUWHJs/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXQuY29t/L3cvZnVsbC9kLzYv/NS8xODE5MzUtMzUw/OHgxOTczLWRlc2t0/b3AtaGQtZGVhZHBv/b2wtd2FsbHBhcGVy/LXBob3RvLmpwZw)',
-            backgroundPosition: 'right center',
-            backgroundSize: 'auto 100%',
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
           }}
         />
 
         {/* Eye glow effect - positioned at eye level */}
-        <div className="absolute top-[25%] right-[20%] w-32 h-16 eye-glow-effect" />
+        <div className="absolute top-[28%] left-[42%] w-24 h-12 eye-glow-left" />
+        <div className="absolute top-[28%] left-[52%] w-24 h-12 eye-glow-right" />
 
         {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-comic-black/50" />
+        <div className="absolute inset-0 bg-comic-black/40" />
       </div>
     );
   };
