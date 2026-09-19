@@ -480,161 +480,27 @@ body {
   pointer-events: none;
 }
 
-/* Katana blade glow effects */
-@keyframes katana-glow-pulse {
+/* Deadpool head sway animation */
+@keyframes deadpool-head-sway {
   0%, 100% {
-    opacity: 0.3;
-    filter: blur(20px);
+    transform: translateX(0) rotate(0deg);
   }
-  50% {
-    opacity: 0.7;
-    filter: blur(30px);
+  25% {
+    transform: translateX(-8px) rotate(-1deg);
   }
-}
-
-@keyframes katana-shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
+  75% {
+    transform: translateX(8px) rotate(1deg);
   }
 }
 
-@keyframes katana-light-streak {
-  0% {
-    transform: translateX(-100%) translateY(-100%) rotate(-45deg);
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(100%) translateY(100%) rotate(-45deg);
-    opacity: 0;
-  }
-}
-
-@keyframes katana-sparkle {
-  0%, 100% {
-    opacity: 0;
-    transform: scale(0) rotate(0deg);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1) rotate(180deg);
-  }
-}
-
-.katana-glow-overlay {
-  background: radial-gradient(
-    ellipse at 65% 45%,
-    rgba(255, 255, 255, 0.4) 0%,
-    rgba(200, 200, 255, 0.3) 20%,
-    rgba(196, 30, 42, 0.2) 40%,
-    transparent 70%
-  );
-  animation: katana-glow-pulse 2.5s ease-in-out infinite;
-  mix-blend-mode: screen;
-}
-
-.katana-shimmer-overlay {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.1) 45%,
-    rgba(255, 255, 255, 0.6) 50%,
-    rgba(255, 255, 255, 0.1) 55%,
-    transparent 100%
-  );
-  background-size: 200% 100%;
-  animation: katana-shimmer 3s ease-in-out infinite;
-  mix-blend-mode: screen;
-}
-
-.katana-light-streak-1 {
-  position: absolute;
-  top: 30%;
-  right: 25%;
-  width: 200px;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.8),
-    rgba(200, 200, 255, 0.6),
-    transparent
-  );
-  animation: katana-light-streak 2.5s ease-in-out infinite;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
-
-.katana-light-streak-2 {
-  position: absolute;
-  top: 50%;
-  right: 30%;
-  width: 180px;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.8),
-    rgba(200, 200, 255, 0.6),
-    transparent
-  );
-  animation: katana-light-streak 2.5s ease-in-out infinite 1.25s;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
-
-.katana-sparkle {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background: white;
-  border-radius: 50%;
-  box-shadow: 0 0 15px 3px rgba(255, 255, 255, 0.9),
-              0 0 30px 6px rgba(200, 200, 255, 0.7),
-              0 0 45px 9px rgba(196, 30, 42, 0.5);
-  animation: katana-sparkle 2s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.katana-sparkle:nth-child(1) {
-  animation-delay: 0s;
-}
-
-.katana-sparkle:nth-child(2) {
-  animation-delay: 0.5s;
-}
-
-.katana-sparkle:nth-child(3) {
-  animation-delay: 1s;
-}
-
-.katana-sparkle:nth-child(4) {
-  animation-delay: 1.5s;
+.deadpool-sway {
+  animation: deadpool-head-sway 4s ease-in-out infinite;
+  transform-origin: center center;
 }
 
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-  .katana-glow-overlay,
-  .katana-shimmer-overlay,
-  .katana-light-streak-1,
-  .katana-light-streak-2,
-  .katana-sparkle {
+  .deadpool-sway {
     animation: none !important;
-  }
-  
-  .katana-glow-overlay {
-    opacity: 0.4;
-  }
-  
-  .katana-shimmer-overlay {
-    opacity: 0.3;
-  }
-  
-  .katana-sparkle {
-    opacity: 0.7;
-    transform: scale(0.9);
   }
 }
