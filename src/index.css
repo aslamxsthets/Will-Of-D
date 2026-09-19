@@ -491,49 +491,8 @@ body {
   filter: contrast(1.2) brightness(0.85) saturate(1.3);
 }
 
-/* Eye glow effects - left and right eyes */
-@keyframes eye-glow-pulse {
-  0%, 100% {
-    opacity: 0.6;
-    transform: scale(1);
-    filter: blur(8px) brightness(1.3);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.3);
-    filter: blur(12px) brightness(2);
-  }
-}
-
-.eye-glow-left,
-.eye-glow-right {
-  background: radial-gradient(
-    ellipse at center,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(220, 240, 255, 0.9) 15%,
-    rgba(180, 210, 255, 0.7) 30%,
-    rgba(150, 180, 255, 0.4) 50%,
-    transparent 75%
-  );
-  animation: eye-glow-pulse 2.5s ease-in-out infinite;
-  filter: blur(8px) brightness(1.5);
-  pointer-events: none;
-  mix-blend-mode: screen;
-  z-index: 5;
-}
-
-.eye-glow-right {
-  animation-delay: 0.1s;
-}
-
 /* Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-  .eye-glow-left,
-  .eye-glow-right {
-    animation: none !important;
-    opacity: 0.7;
-  }
-  
   .deadpool-3d-bg {
     transform: none;
   }

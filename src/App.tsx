@@ -56,19 +56,15 @@ function App() {
         <div
           className="absolute inset-0 deadpool-3d-bg"
           style={{
-            backgroundImage: 'url(https://imgs.search.brave.com/n90iKC1pIk3cs6yVOOZKXo9H6x4DRX5GXuEycmUWHJs/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXQuY29t/L3cvZnVsbC9kLzYv/NS8xODE5MzUtMzUw/OHgxOTczLWRlc2t0/b3AtaGQtZGVhZHBv/b2wtd2FsbHBhcGVy/LXBob3RvLmpwZw)',
+            backgroundImage: 'url(https://imgs.search.brave.com/WmKjtn5xiHfgCNoNBinqJ_WX6feFw9mN55uFtVSqgGo/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC93cDU0NjU1/NDQuanBn)',
             backgroundPosition: 'center center',
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
           }}
         />
 
-        {/* Eye glow effect - positioned at eye level */}
-        <div className="absolute top-[22%] left-[38%] w-32 h-16 eye-glow-left" />
-        <div className="absolute top-[22%] left-[50%] w-32 h-16 eye-glow-right" />
-
-        {/* Dark overlay for text readability - lighter to show eye glow */}
-        <div className="absolute inset-0 bg-comic-black/30" />
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-comic-black/40" />
       </div>
     );
   };
