@@ -1,61 +1,13 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef } from 'react';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import TextShimmer from '../UI/TextShimmer';
 import NumberTicker from '../UI/NumberTicker';
 
 export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
-  const [isDesktop, setIsDesktop] = useState(false);
-  const mousePos = useRef({ x: 0, y: 0 });
-  const currentPos = useRef({ x: 0, y: 0 });
-  const rafId = useRef<number>(0);
 
-  useEffect(() => {
-    const checkDesktop = () => {
-      setIsDesktop(window.innerWidth >= 1024 && !reducedMotion);
-    };
-    checkDesktop();
-    window.addEventListener('resize', checkDesktop);
-    return () => window.removeEventListener('resize', checkDesktop);
-  }, [reducedMotion]);
-
-  useEffect(() => {
-    if (!isDesktop || reducedMotion) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const rect = heroRef.current?.getBoundingClientRect();
-      if (!rect) return;
-      mousePos.current = {
-        x: (e.clientX - rect.left - rect.width / 2) / rect.width,
-        y: (e.clientY - rect.top - rect.height / 2) / rect.height,
-      };
-    };
-
-    const animate = () => {
-      currentPos.current.x += (mousePos.current.x - currentPos.current.x) * 0.05;
-      currentPos.current.y += (mousePos.current.y - currentPos.current.y) * 0.05;
-
-      if (imageRef.current) {
-        const translateX = currentPos.current.x * 15;
-        const translateY = currentPos.current.y * 10;
-        const rotateY = currentPos.current.x * 5;
-        const rotateX = -currentPos.current.y * 3;
-        imageRef.current.style.transform = `translate(${translateX}px, ${translateY}px) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
-      }
-
-      rafId.current = requestAnimationFrame(animate);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    rafId.current = requestAnimationFrame(animate);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(rafId.current);
-    };
-  }, [isDesktop, reducedMotion]);
+  // Removed cursor-following effect - no more mouse jumping
 
   const scrollToRecruitment = () => {
     document.getElementById('recruitment-form')?.scrollIntoView({ behavior: 'smooth' });
@@ -97,9 +49,7 @@ export default function Hero() {
 
         {/* Hero visual */}
         <div
-          ref={imageRef}
           className="relative mx-auto mb-8 w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80"
-          style={{ transformStyle: 'preserve-3d' }}
         >
           {/* Deadpool-inspired emblem */}
           <div className="absolute inset-0 flex items-center justify-center">

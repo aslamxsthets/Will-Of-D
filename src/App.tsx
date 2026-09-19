@@ -64,11 +64,11 @@ function App() {
         />
 
         {/* Eye glow effect - positioned at eye level */}
-        <div className="absolute top-[28%] left-[42%] w-24 h-12 eye-glow-left" />
-        <div className="absolute top-[28%] left-[52%] w-24 h-12 eye-glow-right" />
+        <div className="absolute top-[22%] left-[38%] w-32 h-16 eye-glow-left" />
+        <div className="absolute top-[22%] left-[50%] w-32 h-16 eye-glow-right" />
 
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-comic-black/40" />
+        {/* Dark overlay for text readability - lighter to show eye glow */}
+        <div className="absolute inset-0 bg-comic-black/30" />
       </div>
     );
   };
