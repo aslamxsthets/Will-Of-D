@@ -52,19 +52,22 @@ function App() {
         style={{ opacity }}
         aria-hidden="true"
       >
-        {/* Deadpool background - positioned on right side with head sway */}
+        {/* Deadpool background - full image visible, head movement only */}
         <div
-          className="absolute inset-0 bg-cover bg-right opacity-70 deadpool-sway"
+          className="absolute inset-0 opacity-75 deadpool-head-move"
           style={{
             backgroundImage: 'url(https://imgs.search.brave.com/n90iKC1pIk3cs6yVOOZKXo9H6x4DRX5GXuEycmUWHJs/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXQuY29t/L3cvZnVsbC9kLzYv/NS8xODE5MzUtMzUw/OHgxOTczLWRlc2t0/b3AtaGQtZGVhZHBv/b2wtd2FsbHBhcGVy/LXBob3RvLmpwZw)',
             backgroundPosition: 'right center',
-            backgroundSize: 'contain',
+            backgroundSize: 'auto 100%',
             backgroundRepeat: 'no-repeat',
           }}
         />
 
+        {/* Eye glow effect - positioned at eye level */}
+        <div className="absolute top-[25%] right-[20%] w-32 h-16 eye-glow-effect" />
+
         {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-comic-black/60" />
+        <div className="absolute inset-0 bg-comic-black/50" />
       </div>
     );
   };
