@@ -1,5 +1,6 @@
 import { recruitmentRoles } from '../../data/domains';
 import DomainIcon from '../UI/DomainIcon';
+import SectionHeading from '../UI/SectionHeading';
 
 export default function Recruitment() {
   const scrollToForm = () => {
@@ -14,15 +15,16 @@ export default function Recruitment() {
 
       <div className="relative max-w-6xl mx-auto">
         {/* Section header */}
-        <div className="text-center mb-12 md:mb-16">
-          <span className="comic-caption text-xs mb-4 inline-block">CHAPTER 05</span>
-          <h2 className="comic-heading text-3xl md:text-5xl lg:text-6xl text-white mt-4">
-            THE CREW IS <span className="text-comic-red">RECRUITING.</span>
-          </h2>
-          <p className="mt-4 text-xl md:text-2xl text-comic-yellow font-[var(--font-comic-display)] tracking-wider">
-            YOUR APPLICATION HAS ENTERED THE CHAT.
-          </p>
-        </div>
+        <SectionHeading
+          chapter="CHAPTER 05"
+          title={
+            <>
+              THE COMMUNITY IS <span className="text-comic-red">RECRUITING.</span>
+            </>
+          }
+          subtitle="YOUR APPLICATION HAS ENTERED THE CHAT."
+          subtitleClassName="mt-4 text-xl md:text-2xl text-comic-yellow font-[var(--font-comic-display)] tracking-wider text-shadow-comic"
+        />
 
         {/* Recruitment copy */}
         <div className="max-w-3xl mx-auto mb-12">
@@ -30,15 +32,16 @@ export default function Recruitment() {
             <div className="space-y-4 text-white/80 font-[var(--font-comic-body)] text-base md:text-lg leading-relaxed">
               <p>
                 You don't need a perfect resume. You don't need to know everything. 
-                <span className="text-comic-red font-bold"> Beginners are welcome.</span>
+                <span className="text-comic-red font-bold"> Everyone is welcome.</span>
               </p>
               <p>
-                What matters is curiosity. What matters is the willingness to learn. 
+                What matters is your curiosity. What matters is the willingness to learn. 
                 What matters is showing up and being part of something bigger than yourself.
               </p>
               <p>
                 Collaboration matters more than competition. Growth matters more than perfection. 
                 And the best part? You'll discover strengths you didn't know you had.
+                <span className="text-comic-red font-bold"> [Note: Every Weekends Classes Will Be Taken In Discord on Cybersecurity.]</span>
               </p>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Navbar from './components/Navbar/Navbar';
 import Hero from './components/Hero/Hero';
 import About from './components/About/About';
@@ -8,209 +8,275 @@ import Recruitment from './components/Recruitment/Recruitment';
 import RecruitmentForm from './components/RecruitmentForm/RecruitmentForm';
 import Team from './components/Team/Team';
 import Footer from './components/Footer/Footer';
+import ScrollProgress from './components/UI/ScrollProgress';
+import BackToTop from './components/UI/BackToTop';
+import BlurFade from './components/UI/BlurFade';
 import { usePageTurn } from './hooks/usePageTurn';
 import { useReducedMotion } from './hooks/useReducedMotion';
 
-function App() {
-  const { pageStates, registerSection } = usePageTurn();
-  const reducedMotion = useReducedMotion();
-  const [isMobile, setIsMobile] = useState(false);
+/* ---------------------------------------------------------------------------
+   The background scene and the page divider are declared at module scope, NOT
+   inside <App />. Defining them inside used to create a brand-new component
+   type on every render, so React unmounted and remounted the whole background
+   each time App re-rendered — which re-resolved the image and re-ran effects.
+   --------------------------------------------------------------------------- */
 
+/**
+ * Fixed, full-viewport Deadpool scene.
+ *
+ * Layers, back to front:
+ *   atmosphere -> parallax red bloom
+ *   stage      -> fixed 16:9 box that reproduces `center / cover` exactly, so it
+ *                 lines up pixel-for-pixel with the #dp-boot first-paint layer
+ *                 in index.html and the hand-over is invisible
+ *   parts      -> clipped body regions animated for the "GIF" motion
+ *   vignette   -> foreground darkening, moved furthest on scroll for depth
+ *   sweep      -> slow specular highlight travelling across the art
+ *
+ * `--dp-par` (a small px offset) is written directly to the node on scroll: the
+ * layers then move by different amounts, which is what produces the 3D
+ * parallax. It is scroll-driven on purpose — an earlier version followed the
+ * mouse, which made the artwork jump around as the pointer crossed the page.
+ */
+
+function DeadpoolScene() {
+  const sceneRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
+
+  // Hand over from the instant first-paint layer as soon as our own copy of the
+  // image is decoded, so the swap can never show an empty frame.
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
+    let cancelled = false;
+
+    const reveal = () => {
+      if (!cancelled) document.body.classList.add('dp-ready');
+    };
+
+    const image = new Image();
+    image.src = '/Wade Wilson Deadpool GIF by Xbox.gif';
+
+    if (typeof image.decode === 'function') {
+      image.decode().then(reveal).catch(reveal);
+    } else {
+      image.onload = reveal;
+      image.onerror = reveal;
+    }
+
+    // Safety net: never leave the boot layer stacked over the page.
+    const fallback = window.setTimeout(reveal, 3000);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(fallback);
+    };
   }, []);
 
-  // Fixed Deadpool background that persists throughout scroll
-  const FixedDeadpoolBackground = () => {
-    const [opacity, setOpacity] = useState(1);
+  // Scroll-driven parallax. rAF-throttled, and capped to +-14px so the artwork
+  // cannot drift or expose an edge.
+  useEffect(() => {
+    const scene = sceneRef.current;
+    if (!scene || reducedMotion) return;
 
-    useEffect(() => {
-      const handleScroll = () => {
-        const scrollY = window.scrollY;
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
-        const footerStart = documentHeight - windowHeight * 1.5; // Start fading 1.5 viewports before end
-        
-        if (scrollY > footerStart) {
-          const fadeProgress = (scrollY - footerStart) / (windowHeight * 0.5);
-          setOpacity(Math.max(0, 1 - fadeProgress));
-        } else {
-          setOpacity(1);
-        }
-      };
+    let frame = 0;
 
-      window.addEventListener('scroll', handleScroll, { passive: true });
-      return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    const update = () => {
+      frame = 0;
+      const progress = window.scrollY / Math.max(1, window.innerHeight);
 
-    return (
-      <div 
-        className="fixed inset-0 z-0 pointer-events-none transition-opacity duration-300" 
-        style={{ opacity }}
-        aria-hidden="true"
-      >
-        {/* Deadpool background - full viewport with 3D effect */}
-        <div
-          className="absolute inset-0 deadpool-3d-bg"
-          style={{
-            backgroundImage: 'url(https://imgs.search.brave.com/WmKjtn5xiHfgCNoNBinqJ_WX6feFw9mN55uFtVSqgGo/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC93cDU0NjU1/NDQuanBn)',
-            backgroundPosition: 'center center',
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-          }}
-        />
+      // Vertical drift that drives the layer parallax.
+      const offset = Math.max(-14, Math.min(14, progress * 6));
+      scene.style.setProperty('--dp-par', offset.toFixed(2));
 
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-comic-black/40" />
-      </div>
-    );
-  };
-
-  const getSectionStyle = useCallback((id: string): React.CSSProperties => {
-    if (reducedMotion) return {};
-    if (isMobile) {
-      // Simplified mobile effect - just a subtle lift
-      const state = pageStates.get(id);
-      if (!state) return {};
-      if (state.curlAmount > 0) {
-        return {
-          transform: `translateY(${state.curlAmount * -5}px)`,
-          opacity: 1 - state.curlAmount * 0.1,
-          transition: 'transform 0.15s ease-out, opacity 0.15s ease-out',
-        };
-      }
-      return {};
-    }
-    
-    const state = pageStates.get(id);
-    if (!state) return {};
-
-    return {
-      transform: `perspective(2000px) rotateY(${state.rotateY}deg) rotateX(${state.rotateX}deg) scaleX(${state.scaleX})`,
-      transformOrigin: state.isTurning ? 'left center' : 'center center',
-      transition: 'transform 0.12s ease-out',
-      boxShadow: state.shadow > 0 
-        ? `${state.shadow * -30}px 0 ${state.shadow * 60}px rgba(0,0,0,${state.shadow * 0.4}), inset ${state.shadow * 10}px 0 ${state.shadow * 20}px rgba(0,0,0,${state.shadow * 0.1})` 
-        : 'none',
+      // Additional Y rotation, capped at ~2.2deg: the artwork turns towards the
+      // viewer as the page advances, which is what sells the 3D depth. Kept
+      // small so the ink outline never appears to skew.
+      const rotation = Math.max(0, Math.min(2.2, progress * 0.55));
+      scene.style.setProperty('--dp-rot', `${rotation.toFixed(2)}deg`);
     };
-  }, [pageStates, reducedMotion, isMobile]);
 
-  const sectionRef = useCallback((id: string) => (el: HTMLElement | null) => {
-    registerSection(id, el);
-  }, [registerSection]);
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, [reducedMotion]);
 
   return (
-    <div className="min-h-screen bg-comic-black relative">
-      {/* Fixed Deadpool background visible throughout scroll */}
-      <FixedDeadpoolBackground />
-      
+    <div ref={sceneRef} className="dp-scene" aria-hidden="true">
+      <img
+        className="dp-gif"
+        src="/Wade Wilson Deadpool GIF by Xbox.gif"
+        alt=""
+        aria-hidden="true"
+      />
+      <div className="dp-atmosphere" />
+
+      <div className="dp-float">
+        <div className="dp-stage">
+          {/* Complete, static artwork. Never transformed, so the silhouette and
+              the ink outline around the character can never tear or ghost. */}
+          <div className="dp-layer dp-base" />
+
+          {/* Moving regions, layered on top. Each contains only pixels identical
+              to the base beneath it, which keeps every seam invisible. */}
+          <div className="dp-layer dp-part dp-head" />
+          <div className="dp-layer dp-part dp-arm" />
+          <div className="dp-layer dp-part dp-torso" />
+          <div className="dp-layer dp-part dp-drip" />
+          <div className="dp-layer dp-part dp-word" />
+
+          <div className="dp-glint" />
+        </div>
+      </div>
+
+      <div className="dp-vignette" />
+      <div className="dp-sweep" />
+    </div>
+  );
+}
+
+/** Comic page-edge divider between sections. */
+function PageDivider() {
+  return (
+    <div className="relative h-3 md:h-4 overflow-hidden" aria-hidden="true">
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-comic-red/25 to-transparent" />
+      <div className="absolute inset-0 halftone-dense opacity-20" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-comic-red/30" />
+    </div>
+  );
+}
+
+function App() {
+  const [pageTurnMetrics, setPageTurnMetrics] = useState({ width: 0, height: 0 });
+  const { registerSection } = usePageTurn(pageTurnMetrics);
+
+  // Report viewport changes so usePageTurn recalculates breakpoints on resize.
+  useEffect(() => {
+    const check = () => {
+      setPageTurnMetrics((prev) =>
+        prev.width === window.innerWidth && prev.height === window.innerHeight
+          ? prev
+          : { width: window.innerWidth, height: window.innerHeight }
+      );
+    };
+
+    check();
+    window.addEventListener('resize', check);
+    window.addEventListener('orientationchange', check);
+
+    return () => {
+      window.removeEventListener('resize', check);
+      window.removeEventListener('orientationchange', check);
+    };
+  }, []);
+
+  const sectionRef = useCallback(
+    (id: string) => (el: HTMLElement | null) => {
+      registerSection(id, el);
+    },
+    [registerSection]
+  );
+
+  return (
+    <div className="min-h-screen relative">
+      {/* First tab stop: lets a keyboard user jump straight past the nav bar. */}
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
+
+      <ScrollProgress />
+
+      {/* Fixed 3D Deadpool scene, visible throughout the scroll */}
+      <DeadpoolScene />
+
       <Navbar />
-      
-      <main className="relative z-10">
+
+      {/* Content sits at z-10, above the z-0 scene, so the animated artwork is
+          never painted over the copy. */}
+      <main id="main-content" className="relative z-10">
         {/* Hero - Page 1 */}
-        <div
-          ref={sectionRef('hero')}
-          style={getSectionStyle('hero')}
-          className="page-section"
-        >
+        <div ref={sectionRef('hero')} className="page-section page-turn-animated">
           <Hero />
           <div className="page-edge" />
         </div>
 
-        {/* Page divider - comic book page edge */}
-        <div className="relative h-2 md:h-3 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-comic-red/20 to-transparent" />
-          <div className="absolute inset-0 halftone-dense opacity-20" />
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-comic-red/30" />
-        </div>
+        <PageDivider />
 
         {/* About - Page 2 */}
-        <div
-          ref={sectionRef('about')}
-          style={getSectionStyle('about')}
-          className="page-section"
-        >
+        <div ref={sectionRef('about')} className="page-section page-turn-animated">
+          <div className="section-scrim" aria-hidden="true" />
           <About />
           <div className="page-edge" />
         </div>
 
-        <div className="relative h-2 md:h-3 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-comic-red/20 to-transparent" />
-          <div className="absolute inset-0 halftone-dense opacity-20" />
-        </div>
+        <PageDivider />
 
         {/* What We Do - Page 3 */}
         <div
           ref={sectionRef('what-we-do')}
-          style={getSectionStyle('what-we-do')}
-          className="page-section"
+          className="page-section page-turn-animated"
         >
+          <div className="section-scrim" aria-hidden="true" />
           <WhatWeDo />
           <div className="page-edge" />
         </div>
 
-        <div className="relative h-2 md:h-3 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-comic-red/20 to-transparent" />
-          <div className="absolute inset-0 halftone-dense opacity-20" />
-        </div>
+        <PageDivider />
 
         {/* Why Join - Page 4 */}
         <div
           ref={sectionRef('why-join')}
-          style={getSectionStyle('why-join')}
-          className="page-section"
+          className="page-section page-turn-animated"
         >
+          <div className="section-scrim" aria-hidden="true" />
           <WhyJoin />
           <div className="page-edge" />
         </div>
 
-        <div className="relative h-2 md:h-3 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-comic-red/20 to-transparent" />
-          <div className="absolute inset-0 halftone-dense opacity-20" />
-        </div>
+        <PageDivider />
 
         {/* Recruitment - Page 5 */}
         <div
           ref={sectionRef('recruitment')}
-          style={getSectionStyle('recruitment')}
-          className="page-section"
+          className="page-section page-turn-animated"
         >
+          <div className="section-scrim" aria-hidden="true" />
           <Recruitment />
           <div className="page-edge" />
         </div>
 
-        {/* Recruitment Form - Part of Page 5 */}
-        <section id="recruitment-form" className="relative py-16 md:py-24 px-4 overflow-hidden bg-transparent">
-          <div className="absolute inset-0 halftone opacity-5" />
-          <div className="page-edge" />
+        {/* Recruitment Form - part of Page 5 */}
+        <section
+          id="recruitment-form"
+          className="relative py-16 md:py-24 px-4 overflow-hidden"
+        >
+          <div className="section-scrim" aria-hidden="true" />
           <div className="relative max-w-4xl mx-auto">
-            <div className="text-center mb-10">
+            <BlurFade className="text-center mb-10">
               <span className="comic-caption text-xs mb-4 inline-block">APPLICATION FORM</span>
-              <h2 className="comic-heading text-2xl md:text-4xl text-white mt-4">
+              <h2 className="comic-heading text-2xl md:text-4xl text-white mt-4 text-shadow-comic">
                 FILL IN YOUR <span className="text-comic-red">DETAILS</span>
               </h2>
-              <p className="mt-4 text-white/60 font-[var(--font-comic-body)]">
+              <p className="mt-4 text-white/75 font-[var(--font-comic-body)] text-shadow-comic">
                 All fields marked with <span className="text-comic-red">*</span> are required.
               </p>
-            </div>
+            </BlurFade>
             <RecruitmentForm />
           </div>
         </section>
 
-        <div className="relative h-2 md:h-3 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-comic-red/20 to-transparent" />
-          <div className="absolute inset-0 halftone-dense opacity-20" />
-        </div>
+        <PageDivider />
 
         {/* Team - Page 6 */}
-        <div
-          ref={sectionRef('team')}
-          style={getSectionStyle('team')}
-          className="page-section"
-        >
+        <div ref={sectionRef('team')} className="page-section page-turn-animated">
+          <div className="section-scrim" aria-hidden="true" />
           <Team />
           <div className="page-edge" />
         </div>
@@ -218,6 +284,8 @@ function App() {
 
       {/* Footer / Back Cover - Page 7 */}
       <Footer />
+
+      <BackToTop />
     </div>
   );
 }

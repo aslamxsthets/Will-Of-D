@@ -1,47 +1,79 @@
-import { useState, useCallback } from 'react';
-import { CheckCircle, AlertTriangle } from 'lucide-react';
-import { submitRecruitmentForm, type FormData } from '../../services/recruitmentForm';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { CheckCircle, AlertTriangle, Save } from 'lucide-react';
+import confetti from 'canvas-confetti';
+import {
+  submitRecruitmentForm,
+  saveDraft,
+  loadDraft,
+  type FormData,
+} from '../../services/recruitmentForm';
 
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
 
 const INTEREST_OPTIONS = [
-  'Technical', 'Cybersecurity', 'Development', 'AI/ML', 'Design',
-  'UI/UX', 'Media', 'Content', 'Management', 'Research', 'Other',
+  "DFIR", "Penetration Testing", "Threat Hunting", "Threat Intelligence", "Malware Analysis", 
+  "Web Application Security", "Detection Engineering", "Exploit Development", "Digital Forensics", 
+  "Digital Signature Security", "Others",
 ];
 
 const DAY_OPTIONS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+const EMPTY_FORM: FormData = {
+  fullName: '', email: '', phone: '', department: '', yearOfStudy: '',
+  studentId: '', interests: [], skills: '', experience: '', projects: '',
+  certifications: '', github: '', linkedin: '', portfolio: '',
+  motivation: '', availableDays: [], startTime: '', endTime: '', agreement: false,
+};
 
 interface FormErrors {
   [key: string]: string;
 }
 
+function fireConfetti() {
+  // Burst from the centre-top of the viewport in Deadpool red + white
+  const common = { spread: 100, startVelocity: 45, gravity: 0.9 };
+  confetti({ ...common, particleCount: 80, origin: { x: 0.35, y: 0.55 }, colors: ['#c41e2a', '#ffffff', '#ffcc00'] });
+  confetti({ ...common, particleCount: 80, origin: { x: 0.65, y: 0.55 }, colors: ['#c41e2a', '#ffffff', '#ffcc00'] });
+}
+
 export default function RecruitmentForm() {
   const [status, setStatus] = useState<FormStatus>('idle');
   const [referenceId, setReferenceId] = useState<string>('');
+  const [savedLocally, setSavedLocally] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Set<string>>(new Set());
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [draftSaved, setDraftSaved] = useState(false);
+  const draftTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const [formData, setFormData] = useState<FormData>({
-    fullName: '',
-    email: '',
-    phone: '',
-    department: '',
-    yearOfStudy: '',
-    studentId: '',
-    interests: [],
-    skills: '',
-    experience: '',
-    projects: '',
-    certifications: '',
-    github: '',
-    linkedin: '',
-    portfolio: '',
-    motivation: '',
-    availableDays: [],
-    startTime: '',
-    endTime: '',
-    agreement: false,
+  // Focus the status heading when it mounts so screen-reader / keyboard users
+  // are informed immediately of the outcome.
+  const statusHeadingRef = useRef<HTMLHeadingElement>(null);
+  useEffect(() => {
+    if (status === 'success' || status === 'error') {
+      statusHeadingRef.current?.focus();
+    }
+  }, [status]);
+
+  // Initialise form — restore a previously saved draft if one exists
+  const [formData, setFormData] = useState<FormData>(() => {
+    const draft = loadDraft();
+    if (!draft) return EMPTY_FORM;
+    return { ...EMPTY_FORM, ...draft };
   });
+
+  // Auto-save draft to localStorage ~1 s after the user stops typing
+  useEffect(() => {
+    if (draftTimer.current) clearTimeout(draftTimer.current);
+    draftTimer.current = setTimeout(() => {
+      saveDraft(formData);
+      setDraftSaved(true);
+      setTimeout(() => setDraftSaved(false), 2000);
+    }, 1000);
+    return () => {
+      if (draftTimer.current) clearTimeout(draftTimer.current);
+    };
+  }, [formData]);
 
   const validateField = useCallback((name: string, value: string | string[] | boolean): string => {
     switch (name) {
@@ -67,11 +99,7 @@ export default function RecruitmentForm() {
       case 'linkedin':
       case 'portfolio':
         if (value && typeof value === 'string' && value.length > 0) {
-          try {
-            new URL(value);
-          } catch {
-            return 'Please enter a valid URL';
-          }
+          try { new URL(value); } catch { return 'Please enter a valid URL'; }
         }
         return '';
       case 'motivation':
@@ -92,7 +120,6 @@ export default function RecruitmentForm() {
 
   const handleChange = (name: string, value: string | string[] | boolean) => {
     setFormData(prev => ({ ...prev, [name]: value }));
-    
     if (touched.has(name)) {
       const error = validateField(name, value);
       setErrors(prev => ({ ...prev, [name]: error }));
@@ -120,35 +147,11 @@ export default function RecruitmentForm() {
     handleChange('availableDays', newDays);
   };
 
-  const isFormValid = (): boolean => {
-    const requiredFields: (keyof FormData)[] = [
-      'fullName', 'email', 'phone', 'department', 'yearOfStudy', 'studentId',
-      'interests', 'availableDays', 'startTime', 'endTime', 'agreement',
-    ];
-
-    for (const field of requiredFields) {
-      const error = validateField(field, formData[field] as string | string[] | boolean);
-      if (error) return false;
-    }
-
-    // Check optional URL fields
-    for (const field of ['github', 'linkedin', 'portfolio'] as const) {
-      const error = validateField(field, formData[field]);
-      if (error) return false;
-    }
-
-    // Check motivation length
-    if (formData.motivation.length > 500) return false;
-
-    return true;
-  };
-
-  const isEndpointConfigured = Boolean(import.meta.env.VITE_RECRUITMENT_FORM_ENDPOINT);
+  const errorCount = Object.values(errors).filter(Boolean).length;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate all fields
     const newErrors: FormErrors = {};
     const allFields = Object.keys(formData) as (keyof FormData)[];
     const allTouched = new Set<string>();
@@ -161,11 +164,15 @@ export default function RecruitmentForm() {
 
     setTouched(allTouched);
     setErrors(newErrors);
+    setSubmitAttempted(true);
 
-    if (Object.values(newErrors).some(e => e !== '')) return;
-
-    if (!isEndpointConfigured) {
-      setStatus('error');
+    const firstInvalid = allFields.find((field) => newErrors[field]);
+    if (firstInvalid) {
+      const control = document.getElementById(String(firstInvalid));
+      if (control) {
+        control.focus();
+        control.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
       return;
     }
 
@@ -176,55 +183,57 @@ export default function RecruitmentForm() {
     if (result.success) {
       setStatus('success');
       setReferenceId(result.referenceId || '');
+      setSavedLocally(result.savedLocally ?? false);
+      fireConfetti();
     } else {
       setStatus('error');
     }
   };
 
-  const handleRetry = () => {
+  const handleRetry = () => setStatus('idle');
+
+  const resetForm = () => {
     setStatus('idle');
+    setFormData(EMPTY_FORM);
+    setErrors({});
+    setTouched(new Set());
+    setSubmitAttempted(false);
+    setSavedLocally(false);
   };
 
-  // Success state
+  // ── Success state ──────────────────────────────────────────────────────────
   if (status === 'success') {
     return (
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto" role="status" aria-live="polite">
         <div className="comic-panel p-8 md:p-12 text-center">
-          <div className="w-16 h-16 mx-auto mb-6 border-4 border-green-500 rounded-full flex items-center justify-center">
-            <CheckCircle className="w-8 h-8 text-green-500" />
+          <div className="w-16 h-16 mx-auto mb-6 border-[3px] border-green-500 rounded-full flex items-center justify-center">
+            <CheckCircle className="w-8 h-8 text-green-500" aria-hidden="true" />
           </div>
-          <h3 className="comic-heading text-2xl md:text-3xl text-comic-red mb-4">
+          <h3
+            ref={statusHeadingRef}
+            tabIndex={-1}
+            className="comic-heading text-2xl md:text-3xl text-comic-red mb-4"
+          >
             APPLICATION RECEIVED!
           </h3>
           <p className="text-white/80 font-[var(--font-comic-body)] text-base md:text-lg mb-6 leading-relaxed">
-            Well, look at you. Your application has officially entered the system. 
-            Our crew will review your application and get back to you with the next steps. 
-            Until then... Stay curious. Stay ready.
+            Well, look at you. Your application has officially entered the system.
+            Our community will review it and get back to you. Until then — stay curious. Stay ready.
           </p>
           {referenceId && (
             <div className="mb-6">
               <div className="comic-caption text-sm">
                 REFERENCE: {referenceId}
               </div>
-              <p className="text-white/40 text-xs mt-2">
-                This is a local confirmation identifier for your records.
-              </p>
+              {savedLocally && (
+                <p className="text-yellow-400/80 text-xs mt-2 font-[var(--font-comic-body)]">
+                  ⚠️ Saved locally in your browser (no live endpoint configured). Admins can
+                  retrieve submissions from localStorage key <code>deadpool_crew_submissions</code>.
+                </p>
+              )}
             </div>
           )}
-          <button
-            onClick={() => {
-              setStatus('idle');
-              setFormData({
-                fullName: '', email: '', phone: '', department: '', yearOfStudy: '',
-                studentId: '', interests: [], skills: '', experience: '', projects: '',
-                certifications: '', github: '', linkedin: '', portfolio: '',
-                motivation: '', availableDays: [], startTime: '', endTime: '', agreement: false,
-              });
-              setErrors({});
-              setTouched(new Set());
-            }}
-            className="comic-btn comic-btn-outline text-sm"
-          >
+          <button onClick={resetForm} className="comic-btn comic-btn-outline text-sm">
             SUBMIT ANOTHER
           </button>
         </div>
@@ -232,113 +241,69 @@ export default function RecruitmentForm() {
     );
   }
 
-  // Error state
+  // ── Error state ────────────────────────────────────────────────────────────
   if (status === 'error') {
     return (
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto" role="alert">
         <div className="comic-panel p-8 md:p-12 text-center">
-          <div className="w-16 h-16 mx-auto mb-6 border-4 border-comic-red rounded-full flex items-center justify-center">
-            <AlertTriangle className="w-8 h-8 text-comic-red" />
+          <div className="w-16 h-16 mx-auto mb-6 border-[3px] border-comic-red rounded-full flex items-center justify-center">
+            <AlertTriangle className="w-8 h-8 text-comic-red" aria-hidden="true" />
           </div>
-          <h3 className="comic-heading text-2xl md:text-3xl text-comic-red mb-4">
+          <h3
+            ref={statusHeadingRef}
+            tabIndex={-1}
+            className="comic-heading text-2xl md:text-3xl text-comic-red mb-4"
+          >
             SOMETHING WENT WRONG.
           </h3>
           <p className="text-white/80 font-[var(--font-comic-body)] text-base md:text-lg mb-6">
-            {isEndpointConfigured 
-              ? "Looks like the mission encountered a tiny complication."
-              : "The recruitment form endpoint is not yet configured. Please set VITE_RECRUITMENT_FORM_ENDPOINT in your environment variables to enable form submissions."
-            }
+            Looks like the mission encountered a complication. Your draft is still saved locally.
           </p>
-          {isEndpointConfigured && (
-            <button onClick={handleRetry} className="comic-btn">
-              RETRY
-            </button>
-          )}
-          {!isEndpointConfigured && (
-            <div className="mt-4">
-              <p className="text-white/40 text-sm font-[var(--font-comic-body)]">
-                Your data has been preserved. Go back to the form once the endpoint is configured.
-              </p>
-              <button onClick={handleRetry} className="comic-btn comic-btn-outline text-sm mt-4">
-                BACK TO FORM
-              </button>
-            </div>
-          )}
+          <button onClick={handleRetry} className="comic-btn">RETRY</button>
         </div>
       </div>
     );
   }
 
+  // ── Form ───────────────────────────────────────────────────────────────────
   return (
-    <form onSubmit={handleSubmit} noValidate className="max-w-3xl mx-auto space-y-8">
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+      className="max-w-3xl mx-auto space-y-8"
+      aria-busy={status === 'submitting'}
+    >
+      {/* Draft-saved toast */}
+      {draftSaved && (
+        <div
+          className="flex items-center gap-2 text-xs text-white/50 justify-end"
+          aria-live="polite"
+          role="status"
+        >
+          <Save className="w-3 h-3" aria-hidden="true" />
+          Draft saved
+        </div>
+      )}
+
+      {/* Error summary */}
+      {submitAttempted && errorCount > 0 && (
+        <div className="comic-caption text-sm" role="alert">
+          Please fix the {errorCount} highlighted field{errorCount > 1 ? 's' : ''} below.
+        </div>
+      )}
+
       {/* Personal Information */}
       <fieldset className="comic-panel p-6 md:p-8">
         <legend className="text-lg font-[var(--font-comic-display)] text-comic-red tracking-wider px-2">
           PERSONAL INFORMATION
         </legend>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <FormField
-            label="Full Name"
-            name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={touched.has('fullName') ? errors.fullName : ''}
-            required
-            placeholder="Your full name"
-          />
-          <FormField
-            label="Email Address"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={touched.has('email') ? errors.email : ''}
-            required
-            placeholder="your@email.com"
-          />
-          <FormField
-            label="Phone Number"
-            name="phone"
-            type="tel"
-            value={formData.phone}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={touched.has('phone') ? errors.phone : ''}
-            required
-            placeholder="+1 234 567 8900"
-          />
-          <FormField
-            label="Department"
-            name="department"
-            value={formData.department}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={touched.has('department') ? errors.department : ''}
-            required
-            placeholder="e.g., Computer Science"
-          />
-          <FormField
-            label="Year of Study"
-            name="yearOfStudy"
-            value={formData.yearOfStudy}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={touched.has('yearOfStudy') ? errors.yearOfStudy : ''}
-            required
-            placeholder="e.g., 2nd Year"
-          />
-          <FormField
-            label="Student ID / Roll Number"
-            name="studentId"
-            value={formData.studentId}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={touched.has('studentId') ? errors.studentId : ''}
-            required
-            placeholder="Your student ID"
-          />
+          <FormField label="Full Name" name="fullName" value={formData.fullName} onChange={handleChange} onBlur={handleBlur} error={touched.has('fullName') ? errors.fullName : ''} required placeholder="Your full name" />
+          <FormField label="Email Address" name="email" type="email" value={formData.email} onChange={handleChange} onBlur={handleBlur} error={touched.has('email') ? errors.email : ''} required placeholder="your@email.com" />
+          <FormField label="Phone Number" name="phone" type="tel" value={formData.phone} onChange={handleChange} onBlur={handleBlur} error={touched.has('phone') ? errors.phone : ''} required placeholder="+91 98765 43210" />
+          <FormField label="Department" name="department" value={formData.department} onChange={handleChange} onBlur={handleBlur} error={touched.has('department') ? errors.department : ''} required placeholder="e.g., B.Tech Cybersecurity" />
+          <FormField label="Year of Study" name="yearOfStudy" value={formData.yearOfStudy} onChange={handleChange} onBlur={handleBlur} error={touched.has('yearOfStudy') ? errors.yearOfStudy : ''} required placeholder="e.g., 2nd Year" />
+          <FormField label="Student ID / Roll Number" name="studentId" value={formData.studentId} onChange={handleChange} onBlur={handleBlur} error={touched.has('studentId') ? errors.studentId : ''} required placeholder="Your student ID" />
         </div>
       </fieldset>
 
@@ -377,7 +342,7 @@ export default function RecruitmentForm() {
         </legend>
         <p className="text-white/60 text-sm mb-4">Optional — tell us what you've done</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label="Skills" name="skills" value={formData.skills} onChange={handleChange} onBlur={handleBlur} placeholder="e.g., Python, React, Figma" />
+          <FormField label="Skills" name="skills" value={formData.skills} onChange={handleChange} onBlur={handleBlur} placeholder="e.g., Python, NMap, Burp Suite, etc." />
           <FormField label="Previous Experience" name="experience" value={formData.experience} onChange={handleChange} onBlur={handleBlur} placeholder="Clubs, internships, etc." />
           <FormField label="Projects" name="projects" value={formData.projects} onChange={handleChange} onBlur={handleBlur} placeholder="Notable projects" />
           <FormField label="Certifications" name="certifications" value={formData.certifications} onChange={handleChange} onBlur={handleBlur} placeholder="Relevant certifications" />
@@ -394,7 +359,7 @@ export default function RecruitmentForm() {
         </legend>
         <div className="mt-4">
           <label htmlFor="motivation" className="block text-sm font-medium text-white/80 mb-2">
-            What makes you want to join Deadpool Crew?
+            What makes you want to join "Will of D" Community?
           </label>
           <textarea
             id="motivation"
@@ -404,7 +369,7 @@ export default function RecruitmentForm() {
             rows={4}
             maxLength={500}
             className="comic-input resize-none"
-            placeholder="Tell us why you want to be part of the crew..."
+            placeholder="Tell us why you want to be part of the community..."
           />
           <div className="flex justify-between items-center mt-1">
             {touched.has('motivation') && errors.motivation && (
@@ -492,7 +457,7 @@ export default function RecruitmentForm() {
             required
           />
           <label htmlFor="agreement" className="text-sm text-white/80 leading-relaxed">
-            I confirm that the information provided above is accurate and I consent to its use 
+            I confirm that the information provided above is accurate and I consent to its use
             for the club's recruitment and selection process.
           </label>
         </div>
@@ -505,21 +470,20 @@ export default function RecruitmentForm() {
       <div className="text-center pt-4">
         <button
           type="submit"
-          disabled={!isFormValid() || status === 'submitting'}
-          className={`comic-btn text-lg px-12 ${
-            !isFormValid() || status === 'submitting'
-              ? 'opacity-50 cursor-not-allowed'
-              : ''
-          }`}
+          disabled={status === 'submitting'}
+          className="comic-btn text-lg px-12"
         >
           {status === 'submitting' ? 'PROCESSING APPLICATION...' : 'SUBMIT APPLICATION'}
         </button>
+        <p className="text-white/55 text-xs mt-3 font-[var(--font-comic-body)]">
+          Fields marked <span className="text-comic-red">*</span> are required.
+        </p>
       </div>
     </form>
   );
 }
 
-// Reusable form field component
+// ── Reusable form field ──────────────────────────────────────────────────────
 interface FormFieldProps {
   label: string;
   name: string;

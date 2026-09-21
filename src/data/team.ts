@@ -4,76 +4,41 @@ export interface TeamMember {
   role: string;
   domain: string;
   description: string;
+  image?: string;
   socials?: {
     github?: string;
     linkedin?: string;
     twitter?: string;
+    portfolio?: string;
   };
 }
 
 export const teamMembers: TeamMember[] = [
   {
     id: '1',
-    name: 'Alex Chen',
-    role: 'President',
+    name: 'Aslam Javeed M',
+    role: 'Founder & President\n(Captain)',
     domain: 'Leadership',
-    description: 'Keeps the crew moving forward and the chaos organized.',
-    socials: { github: '#', linkedin: '#' },
+    description: 'The genius behind the madness and somehow is still in charge.',
+    image: '/aslam-profile.jpeg',
+    socials: {
+      github: 'https://github.com/aslamxsthets/',
+      linkedin: 'https://www.linkedin.com/in/aj49/',
+      portfolio: 'https://aslamxsthets.github.io/Portfolio-Gear5/',
+    },
   },
   {
     id: '2',
-    name: 'Sarah Mitchell',
-    role: 'Vice President',
+    name: 'Akash M',
+    role: 'Co-Founder & Vice President\n(First-Mate)',
     domain: 'Leadership',
-    description: 'The strategic mind behind every crew operation.',
-    socials: { github: '#', linkedin: '#' },
+    description: 'The strategic mind behind every community operation.',
+    image: '/akash-profile.jpeg',
+    socials: {
+      github: 'https://github.com/Akash-iot',
+      linkedin: 'https://www.linkedin.com/in/akash2201/',
+      portfolio: 'https://public-eight-sigma-25.vercel.app/',
+    },
   },
-  {
-    id: '3',
-    name: 'Raj Patel',
-    role: 'Technical Lead',
-    domain: 'Technical',
-    description: 'Builds things, breaks things, then fixes them better.',
-    socials: { github: '#', linkedin: '#' },
-  },
-  {
-    id: '4',
-    name: 'Maya Johnson',
-    role: 'Creative Lead',
-    domain: 'Creative',
-    description: 'Makes everything look like it belongs on a comic cover.',
-    socials: { linkedin: '#' },
-  },
-  {
-    id: '5',
-    name: 'Jordan Kim',
-    role: 'Media Lead',
-    domain: 'Media',
-    description: 'If it happened, there\'s probably a photo by Jordan.',
-    socials: { linkedin: '#' },
-  },
-  {
-    id: '6',
-    name: 'Priya Sharma',
-    role: 'Content Lead',
-    domain: 'Content & Research',
-    description: 'Turns complex ideas into readable stories.',
-    socials: { github: '#', linkedin: '#' },
-  },
-  {
-    id: '7',
-    name: 'Marcus Williams',
-    role: 'Events Lead',
-    domain: 'Events / Management',
-    description: 'The person who makes sure nothing falls through the cracks.',
-    socials: { linkedin: '#' },
-  },
-  {
-    id: '8',
-    name: 'Luna Garcia',
-    role: 'Community Lead',
-    domain: 'Community',
-    description: 'Makes sure everyone feels like they belong in the crew.',
-    socials: { github: '#', linkedin: '#' },
-  },
+
 ];

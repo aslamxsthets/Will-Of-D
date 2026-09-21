@@ -1,6 +1,6 @@
-# Deadpool Crew — Comic Book Club Website
+# Will Of D Crew — Comic Book Club Website
 
-A modern, interactive comic-book themed website for the Deadpool Crew student organization.
+A modern, interactive comic-book themed website for the Will Of D Crew student organization.
 
 ## 🚀 Quick Start
 
@@ -53,6 +53,9 @@ src/
 │   ├── RecruitmentForm/ - Full application form
 │   ├── Team/            - Team member cards
 │   └── Footer/          - Back cover & footer
+│   └── UI/              - Reusable UI pieces: DomainIcon, BlurFade, NumberTicker,
+│                          TextShimmer, WordPullUp, SectionHeading,
+│                          ScrollProgress, BackToTop
 ├── data/
 │   ├── domains.ts       - Club domains/teams data
 │   ├── team.ts          - Team member data
@@ -64,27 +67,35 @@ src/
 │   └── useReducedMotion.ts - Accessibility hook
 ├── App.tsx              - Main application
 ├── main.tsx             - Entry point
-└── index.css            - Global styles & comic theme
+└── index.css            - Global styles, comic theme & the 3D background scene
 ```
 
 ## 🎨 Design Features
 
-- Comic-book page-turn scrolling (3D transforms)
-- Custom comic cursor (desktop only)
-- Hero cursor-following parallax
-- Halftone textures & ink splatters
-- Comic panels with hover effects
-- Speech bubbles & caption boxes
+- **Instant 3D Will Of D scene** — a local, preloaded asset painted on the very
+  first frame (a `#dp-boot` layer renders it before React mounts), then handed
+  over to the animated scene with no visible swap
+- **Real 3D depth** — perspective stage, per-layer scroll parallax, and a small
+  Y rotation that turns the artwork toward you as you scroll
+- **GIF-like body motion** — mask, raised arm, torso, ink-drip tail and wordmark
+  each pivot around their own joint, layered over an untouched base so the ink
+  outline never tears (pure CSS, no per-frame JavaScript)
+- Comic-book page-turn scrolling between sections
+- Halftone textures, action lines & ink splatters
+- Comic panels, speech bubbles & caption boxes
+- Reading-progress bar and back-to-top control
 - Responsive design (mobile-first)
-- Reduced motion support
-- Accessible form with validation
+- Reduced motion support — the scene falls back to the static artwork
+- Accessible form with inline validation, error summary and focus management
 
 ## 📱 Responsive Behavior
 
-- **Desktop**: Full 3D page-turn, custom cursor, parallax
+- **Desktop**: Full 3D page-turn, full scene motion and parallax
 - **Tablet**: Reduced 3D depth, simplified transitions
-- **Mobile**: Simplified transitions, no custom cursor
-- **Reduced Motion**: Minimal animations, fade transitions
+- **Mobile**: Simplified transitions; the expensive scene effects (sweep, glint,
+  full-viewport blur) are dropped and the tilt is reduced
+- **Reduced Motion**: All scene and page-turn animation disabled, so the visitor
+  gets the original static artwork
 
 ## 🔒 Security
 
@@ -95,4 +106,4 @@ src/
 
 ## 📄 License
 
-Internal use for Deadpool Crew student organization.
+Internal use for Will Of D Crew student organization.

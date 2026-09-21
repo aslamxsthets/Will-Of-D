@@ -9,15 +9,46 @@
     <meta property="og:description" content="A student-driven community where curiosity turns into practical experience. Join the crew." />
     <meta property="og:type" content="website" />
     <meta name="theme-color" content="#c41e2a" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@400;700&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- Background art is a LOCAL asset and is fetched at parse time (highest priority)
+         so it is decoded before React mounts. This is what makes it paint instantly
+         instead of "appearing later" (the old version hot-linked a remote image proxy). -->
+    <link rel="preload" as="image" href="/deadpool-bg.jpg" fetchpriority="high" />
+
     <style>
       html, body { margin: 0; padding: 0; width: 100%; min-height: 100%; }
       body { background-color: #0a0a0a; color: #ffffff; }
+
+      /* ---- Instant first paint -------------------------------------------------
+         #dp-boot shows the comic art on the very first frame, before the JS
+         bundle has parsed or React has mounted. Its `cover` rendering is
+         pixel-identical to the 16:9 stage the app uses, so handing over to the
+         animated scene is invisible. React adds `.dp-ready` to <body> once its
+         own copy of the image is decoded, then this layer fades out. */
+      #dp-boot {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background: #0a0a0a url("/deadpool-bg.jpg") center center / cover no-repeat;
+        transition: opacity 0.55s ease 0.05s;
+      }
+      body.dp-ready #dp-boot { opacity: 0; }
+
+      #root { position: relative; z-index: 1; }
+
+      @media (prefers-reduced-motion: reduce) {
+        #dp-boot { transition: none; }
+      }
     </style>
   </head>
   <body>
+    <div id="dp-boot" aria-hidden="true"></div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

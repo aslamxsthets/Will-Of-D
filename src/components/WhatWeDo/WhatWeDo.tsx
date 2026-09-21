@@ -1,89 +1,114 @@
 import { domains } from '../../data/domains';
 import DomainIcon from '../UI/DomainIcon';
+import SectionHeading from '../UI/SectionHeading';
 
 export default function WhatWeDo() {
   return (
     <section id="what-we-do" className="relative py-20 md:py-32 px-4 overflow-hidden bg-transparent">
-      {/* Background */}
-      <div className="absolute inset-0 action-lines opacity-10" />
+      {/* Background atmosphere */}
+      <div className="absolute inset-0 action-lines opacity-10 pointer-events-none" />
       <div className="ink-splatter top-[20%] right-[5%] w-48 h-48 opacity-20" />
       <div className="ink-splatter bottom-[10%] left-[10%] w-36 h-36 opacity-15" />
 
       <div className="relative max-w-7xl mx-auto">
         {/* Section header */}
-        <div className="text-center mb-12 md:mb-16">
-          <span className="comic-caption text-xs mb-4 inline-block">CHAPTER 03</span>
-          <h2 className="comic-heading text-3xl md:text-5xl lg:text-6xl text-white mt-4">
-            WHAT'S THE <span className="text-comic-red">MISSION?</span>
-          </h2>
-          <p className="mt-6 text-white/70 max-w-2xl mx-auto font-[var(--font-comic-body)] text-lg">
-            Six domains. One crew. Every skill set has a place here.
-          </p>
-        </div>
+        <SectionHeading
+          chapter="CHAPTER 03"
+          title={
+            <>
+              WHAT'S THE <span className="text-comic-red">MISSION?</span>
+            </>
+          }
+          subtitle="Six domains. One community. Every skill set has a place here."
+        />
 
-        {/* Domain panels */}
+        {/* Domain Comic Panels */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
           {domains.map((domain, index) => (
             <div
               key={domain.id}
-              className="comic-panel p-6 relative group overflow-hidden"
+              className="comic-card-dossier p-6 relative group overflow-hidden flex flex-col justify-between"
+              style={{
+                boxShadow: `5px 5px 0px #000000, 9px 9px 0px ${domain.color}33`,
+              }}
             >
-              {/* Background accent */}
+              {/* Halftone background texture */}
+              <div className="absolute inset-0 halftone opacity-5 group-hover:opacity-15 transition-opacity pointer-events-none" />
+              
+              {/* Domain colored top accent bar */}
               <div
-                className="absolute top-0 left-0 h-1 transition-all duration-500 group-hover:w-full w-0"
+                className="absolute top-0 left-0 right-0 h-1.5 transition-all duration-300"
                 style={{ backgroundColor: domain.color }}
               />
-              <div
-                className="absolute top-0 left-0 w-full h-0.5 opacity-50"
-                style={{ backgroundColor: domain.color }}
-              />
-              
-              {/* Background halftone */}
-              <div className="absolute inset-0 halftone opacity-5 group-hover:opacity-10 transition-opacity" />
-              
-              {/* Panel number */}
-              <div className="absolute top-3 right-3 text-xs font-bold text-white/20 font-[var(--font-comic-display)]">
-                {String(index + 1).padStart(2, '0')}
-              </div>
 
-              {/* Icon */}
-              <div className="mb-4 transform group-hover:scale-110 transition-transform duration-300">
-                <DomainIcon iconName={domain.iconName} color={domain.color} size="lg" />
-              </div>
-
-              {/* Title */}
-              <h3
-                className="text-lg md:text-xl font-[var(--font-comic-display)] tracking-wider mb-2"
-                style={{ color: domain.color }}
-              >
-                {domain.title}
-              </h3>
-
-              {/* Tagline */}
-              <p className="text-white/90 font-[var(--font-comic-body)] font-bold text-sm md:text-base mb-3 italic">
-                &ldquo;{domain.tagline}&rdquo;
-              </p>
-
-              {/* Description */}
-              <p className="text-white/60 text-sm mb-4 leading-relaxed">
-                {domain.description}
-              </p>
-
-              {/* Items */}
-              <div className="flex flex-wrap gap-2">
-                {domain.items.map((item) => (
+              {/* Panel Top: Comic Header Tape + Number */}
+              <div>
+                <div className="flex items-center justify-between gap-2 mb-4">
                   <span
-                    key={item}
-                    className="text-xs px-2 py-1 border border-white/20 text-white/70 font-medium hover:border-white/40 transition-colors"
-                    style={{ borderColor: `${domain.color}33` }}
+                    className="comic-tape text-[11px] tracking-wider font-extrabold uppercase"
+                    style={{ backgroundColor: domain.color, color: '#000' }}
                   >
-                    {item}
+                    MISSION FILE #{String(index + 1).padStart(2, '0')}
                   </span>
-                ))}
+                  <span className="text-xs font-black text-white/30 font-[var(--font-comic-display)] tracking-widest">
+                    SEC-{domain.id.toUpperCase().slice(0, 3)}
+                  </span>
+                </div>
+
+                {/* Icon & Title Row */}
+                <div className="flex items-center gap-3.5 mb-3.5">
+                  <div
+                    className="p-2.5 rounded-lg border-2 border-black bg-comic-black shadow-[3px_3px_0px_#000] transform group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 flex-shrink-0"
+                    style={{ borderColor: domain.color }}
+                  >
+                    <DomainIcon iconName={domain.iconName} color={domain.color} size="md" />
+                  </div>
+                  <div>
+                    <h3
+                      className="text-xl md:text-2xl font-[var(--font-comic-display)] tracking-wider leading-none"
+                      style={{ color: domain.color }}
+                    >
+                      {domain.title}
+                    </h3>
+                  </div>
+                </div>
+
+                {/* Comic Speech Tagline Balloon */}
+                <div className="comic-speech-tagline mb-3.5 text-xs md:text-sm text-white/90">
+                  &ldquo;{domain.tagline}&rdquo;
+                </div>
+
+                {/* Description */}
+                <p className="text-white/70 text-xs md:text-sm leading-relaxed mb-5 font-[var(--font-comic-body)]">
+                  {domain.description}
+                </p>
               </div>
 
-              {/* Corner decoration */}
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-t-2 border-l-2 border-white/10" />
+              {/* Domain Skill Pills */}
+              <div>
+                <div className="text-[10px] font-bold text-white/40 tracking-wider uppercase mb-2">
+                  FOCUS AREAS //
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {domain.items.map((item) => (
+                    <span
+                      key={item}
+                      className="comic-tag text-[11px] rounded"
+                      style={{
+                        borderColor: `${domain.color}55`,
+                      }}
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Comic ink corner notches */}
+              <div
+                className="absolute bottom-0 right-0 w-4 h-4 border-t-2 border-l-2 opacity-50"
+                style={{ borderColor: domain.color }}
+              />
             </div>
           ))}
         </div>
