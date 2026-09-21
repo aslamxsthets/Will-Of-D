@@ -13,6 +13,8 @@ export interface TeamMember {
   };
 }
 
+const publicAsset = (filename: string) => `${import.meta.env.BASE_URL}${filename}`;
+
 export const teamMembers: TeamMember[] = [
   {
     id: '1',
@@ -20,7 +22,7 @@ export const teamMembers: TeamMember[] = [
     role: 'Founder & President\n(Captain)',
     domain: 'Leadership',
     description: 'The genius behind the madness and somehow is still in charge.',
-    image: '/aslam-profile.jpeg',
+    image: publicAsset('aslam-profile.jpeg'),
     socials: {
       github: 'https://github.com/aslamxsthets/',
       linkedin: 'https://www.linkedin.com/in/aj49/',
@@ -33,7 +35,7 @@ export const teamMembers: TeamMember[] = [
     role: 'Co-Founder & Vice President\n(First-Mate)',
     domain: 'Leadership',
     description: 'The strategic mind behind every community operation.',
-    image: '/akash-profile.jpeg',
+    image: publicAsset('akash-profile.jpeg'),
     socials: {
       github: 'https://github.com/Akash-iot',
       linkedin: 'https://www.linkedin.com/in/akash2201/',
