@@ -18,7 +18,7 @@
     <!-- Background art is a LOCAL asset and is fetched at parse time (highest priority)
          so it is decoded before React mounts. This is what makes it paint instantly
          instead of "appearing later" (the old version hot-linked a remote image proxy). -->
-    <link rel="preload" as="image" href="/deadpool-bg.jpg" fetchpriority="high" />
+    <link rel="preload" as="image" href="deadpool-bg.jpg" fetchpriority="high" />
 
     <style>
       html, body { margin: 0; padding: 0; width: 100%; min-height: 100%; }
@@ -35,7 +35,7 @@
         inset: 0;
         z-index: 0;
         pointer-events: none;
-        background: #0a0a0a url("/deadpool-bg.jpg") center center / cover no-repeat;
+        background: #0a0a0a url("deadpool-bg.jpg") center center / cover no-repeat;
         transition: opacity 0.55s ease 0.05s;
       }
       body.dp-ready #dp-boot { opacity: 0; }

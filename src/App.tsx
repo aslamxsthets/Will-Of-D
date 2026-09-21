@@ -53,7 +53,7 @@ function DeadpoolScene() {
     };
 
     const image = new Image();
-    image.src = '/Wade Wilson Deadpool GIF by Xbox.gif';
+    image.src = `${import.meta.env.BASE_URL}Wade Wilson Deadpool GIF by Xbox.gif`;
 
     if (typeof image.decode === 'function') {
       image.decode().then(reveal).catch(reveal);
@@ -112,7 +112,7 @@ function DeadpoolScene() {
     <div ref={sceneRef} className="dp-scene" aria-hidden="true">
       <img
         className="dp-gif"
-        src="/Wade Wilson Deadpool GIF by Xbox.gif"
+        src={`${import.meta.env.BASE_URL}Wade Wilson Deadpool GIF by Xbox.gif`}
         alt=""
         aria-hidden="true"
       />
