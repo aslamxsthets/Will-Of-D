@@ -1,7 +1,7 @@
 import { Instagram, Linkedin, Github } from 'lucide-react';
 import { navItems } from '../../data/navigation';
 
-const discordInviteUrl = 'https://discord.gg/NYdQ2HUHq';
+const discordInviteUrl = 'https://discord.gg/52pCrsBJSJ';
 
 function DiscordIcon({ size = 20 }: { size?: number }) {
   return (
