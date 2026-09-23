@@ -1,13 +1,13 @@
 /**
- * Deadpool Easter egg quotes — each entry has a quote string and a sound "mood"
+ * Deadpool Easter egg quotes - each entry has a quote string and a sound "mood"
  * that maps to a Web Audio API tone pattern. No audio files needed.
  *
  * Sound moods:
- *   "zap"   — electric crackle (high freq burst)
- *   "sword" — metallic ring (mid freq with decay)
- *   "swoosh"— air-cut rush (noise sweep down)
- *   "chimichanga" — ascending comic "dun dun DUN"
- *   "pop"   — cartoon pop (short sine burst)
+ *   "zap"   - electric crackle (high freq burst)
+ *   "sword" - metallic ring (mid freq with decay)
+ *   "swoosh" - air-cut rush (noise sweep down)
+ *   "chimichanga" - ascending comic "dun dun DUN"
+ *   "pop"   - cartoon pop (short sine burst)
  */
 
 export type SoundMood = 'zap' | 'sword' | 'swoosh' | 'chimichanga' | 'pop';
@@ -23,7 +23,7 @@ export const DEADPOOL_QUOTES: DeadpoolQuote[] = [
     mood: 'zap',
   },
   {
-    text: "🌯 Chimichanga time! Seriously though — JOIN THE COMMUNITY before I eat it all.",
+    text: "🌯 Chimichanga time! Seriously though - JOIN THE COMMUNITY before I eat it all.",
     mood: 'chimichanga',
   },
   {
@@ -35,11 +35,11 @@ export const DEADPOOL_QUOTES: DeadpoolQuote[] = [
     mood: 'pop',
   },
   {
-    text: "📺 Loading Deadpool's Big Brain Thought… 🤔 … Nah. Just go join the club.",
+    text: "📺 Loading Marvel Jesus's Big Brain Thought… 🤔 … Nah. Just go join the club.",
     mood: 'swoosh',
   },
   {
-    text: "🩸 Red suit — so villains can't see me bleed. Also so I don't have to do laundry.",
+    text: "🩸 Red suit - so villains can't see me bleed. Also so I don't have to do laundry.",
     mood: 'zap',
   },
   {
@@ -59,7 +59,7 @@ export const DEADPOOL_QUOTES: DeadpoolQuote[] = [
     mood: 'swoosh',
   },
   {
-    text: "🌀 Wait— are you… reading this at 3 AM? Bestie. Same. Let's be weird together in the community.",
+    text: "🌀 Wait - are you… reading this at 3 AM? Bestie. Same. Let's be weird together in the community.",
     mood: 'zap',
   },
   {
@@ -67,7 +67,7 @@ export const DEADPOOL_QUOTES: DeadpoolQuote[] = [
     mood: 'chimichanga',
   },
   {
-    text: "🎪 Welcome to the DC Community — where nerds become legends and coffee is currency. 💸",
+    text: "🎪 Welcome to the DC Community - where nerds become legends and coffee is currency. 💸",
     mood: 'pop',
   },
   {
@@ -77,9 +77,14 @@ export const DEADPOOL_QUOTES: DeadpoolQuote[] = [
 ];
 
 export function getRandomDeadpoolQuote(
-  currentQuote?: DeadpoolQuote | null
-): DeadpoolQuote {
-  const filtered = DEADPOOL_QUOTES.filter((q) => q.text !== currentQuote?.text);
+  currentQuote?: DeadpoolQuote | null,
+  usedQuoteTexts: string[] = []
+): DeadpoolQuote | null {
+  const filtered = DEADPOOL_QUOTES.filter(
+    (q) => q.text !== currentQuote?.text && !usedQuoteTexts.includes(q.text)
+  );
+
+  if (filtered.length === 0) return null;
   return filtered[Math.floor(Math.random() * filtered.length)];
 }
 
