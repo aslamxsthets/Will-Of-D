@@ -125,12 +125,12 @@ export default function Navbar() {
             }}
             className="flex items-center gap-2.5 group cursor-pointer"
             aria-label="WILL OF D Community - back to top and hear quote"
-            title="WILL OF D Community — Click for dialogue!"
+            title="WILL OF D Community - Click for dialogue!"
           >
             <DeadpoolLogo size="sm" withSwords={true} animated={true} />
-            <span className="text-comic-red group-hover:text-comic-yellow">
-              WILL OF <span className="text-base md:text-lg font-[var(--font-comic-display)] tracking-wider text-white group-hover:text-comic-red transition-colors">D</span>
-              <span className="text-comic-red group-hover:text-comic-yellow"> COMMUNITY</span>
+            <span className="text-comic-red group-hover:text-comic-yellow" style={{ fontFamily: 'var(--font-comic-display)' }}>
+              WILL OF <span className="text-base md:text-lg tracking-wider text-white group-hover:text-comic-red transition-colors" style={{ fontFamily: 'var(--font-comic-display)' }}>D</span>
+              <span className="text-comic-red group-hover:text-comic-yellow" style={{ fontFamily: 'var(--font-comic-display)' }}> COMMUNITY</span>
             </span>
           </a>
 
