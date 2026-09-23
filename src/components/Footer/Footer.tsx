@@ -115,9 +115,11 @@ export default function Footer() {
                   </a>
                 </p>
                 <p>Sure we'll meet the Chaotic Goal.</p>
-                <p className="text-white/75 text-xs mt-2">
+                <p className="text-red-500 text-xs mt-2">
                   Hail, Will Of D! Hail, Marvel Jesus!
-                  The Creator of "Will Of D" is a Legend called Anandaprian.K Baddie
+                </p>
+                <p className="text-white/75 text-xs mt-1">
+                  The Creator of "Will Of D" Website is a Legend called Anandaprian.K Baddie
                 </p>
               </div>
             </div>
