@@ -96,7 +96,17 @@ export default function RecruitmentForm() {
       case 'interests':
         return !value || (Array.isArray(value) && value.length === 0) ? 'Select at least one interest' : '';
       case 'github':
+        if (!value || (typeof value === 'string' && !value.trim())) return 'GitHub profile is required';
+        if (typeof value === 'string' && value.length > 0) {
+          try { new URL(value); } catch { return 'Please enter a valid URL'; }
+        }
+        return '';
       case 'linkedin':
+        if (!value || (typeof value === 'string' && !value.trim())) return 'LinkedIn profile is required';
+        if (typeof value === 'string' && value.length > 0) {
+          try { new URL(value); } catch { return 'Please enter a valid URL'; }
+        }
+        return '';
       case 'portfolio':
         if (value && typeof value === 'string' && value.length > 0) {
           try { new URL(value); } catch { return 'Please enter a valid URL'; }
@@ -346,8 +356,8 @@ export default function RecruitmentForm() {
           <FormField label="Previous Experience" name="experience" value={formData.experience} onChange={handleChange} onBlur={handleBlur} placeholder="Clubs, internships, etc." />
           <FormField label="Projects" name="projects" value={formData.projects} onChange={handleChange} onBlur={handleBlur} placeholder="Notable projects" />
           <FormField label="Certifications" name="certifications" value={formData.certifications} onChange={handleChange} onBlur={handleBlur} placeholder="Relevant certifications" />
-          <FormField label="GitHub" name="github" type="url" value={formData.github} onChange={handleChange} onBlur={handleBlur} error={touched.has('github') ? errors.github : ''} placeholder="https://github.com/username" />
-          <FormField label="LinkedIn" name="linkedin" type="url" value={formData.linkedin} onChange={handleChange} onBlur={handleBlur} error={touched.has('linkedin') ? errors.linkedin : ''} placeholder="https://linkedin.com/in/username" />
+          <FormField label="GitHub" name="github" type="url" value={formData.github} onChange={handleChange} onBlur={handleBlur} error={touched.has('github') ? errors.github : ''} required placeholder="https://github.com/username" />
+          <FormField label="LinkedIn" name="linkedin" type="url" value={formData.linkedin} onChange={handleChange} onBlur={handleBlur} error={touched.has('linkedin') ? errors.linkedin : ''} required placeholder="https://linkedin.com/in/username" />
           <FormField label="Portfolio" name="portfolio" type="url" value={formData.portfolio} onChange={handleChange} onBlur={handleBlur} error={touched.has('portfolio') ? errors.portfolio : ''} placeholder="https://yourportfolio.com" />
         </div>
       </fieldset>
