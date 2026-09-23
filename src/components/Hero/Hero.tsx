@@ -19,12 +19,21 @@ import { getRandomDeadpoolQuote, playMoodSound, type DeadpoolQuote } from '../..
  */
 export default function Hero() {
   const [quote, setQuote] = useState<DeadpoolQuote | null>(null);
+  const [usedQuoteTexts, setUsedQuoteTexts] = useState<string[]>([]);
   const [isWobbling, setIsWobbling] = useState(false);
   const quoteTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const triggerDeadpoolQuote = useCallback(() => {
-    const next = getRandomDeadpoolQuote(quote);
+    const next = getRandomDeadpoolQuote(quote, usedQuoteTexts);
+
+    if (!next) {
+      setQuote(null);
+      setUsedQuoteTexts([]);
+      return;
+    }
+
     setQuote(next);
+    setUsedQuoteTexts((prev) => [...prev, next.text]);
     playMoodSound(next.mood);
 
     setIsWobbling(true);
@@ -34,7 +43,7 @@ export default function Hero() {
     quoteTimer.current = setTimeout(() => {
       setQuote(null);
     }, 5500);
-  }, [quote]);
+  }, [quote, usedQuoteTexts]);
 
   // Allow other components (e.g. Navbar logo) to trigger a quote remotely.
   useEffect(() => {
