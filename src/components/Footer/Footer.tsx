@@ -117,6 +117,7 @@ export default function Footer() {
                 <p>Sure we'll meet the Chaotic Goal.</p>
                 <p className="text-white/75 text-xs mt-2">
                   Hail, Will Of D! Hail, Marvel Jesus!
+                  The Creator of "Will Of D" is a Legend called Anandaprian.K Baddie
                 </p>
               </div>
             </div>
@@ -128,7 +129,7 @@ export default function Footer() {
               © {new Date().getFullYear()} Will Of D Community. All rights reserved.
             </p>
             <p className="mt-2 text-white/80 text-xs font-[var(--font-comic-body)]">
-              "With great power comes great... responsibility to have fun."
+              "With great power comes great...Responsibility to have fun."
             </p>
           </div>
         </div>
