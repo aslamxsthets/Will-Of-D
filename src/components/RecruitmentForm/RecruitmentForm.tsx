@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { CheckCircle, AlertTriangle, Save } from 'lucide-react';
+import { CheckCircle, AlertTriangle, Save, Terminal, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import {
   submitRecruitmentForm,
@@ -39,6 +39,9 @@ function fireConfetti() {
 export default function RecruitmentForm() {
   const [status, setStatus] = useState<FormStatus>('idle');
   const [referenceId, setReferenceId] = useState<string>('');
+  const [ctfOpen, setCtfOpen] = useState(false);
+  const [ctfCommand, setCtfCommand] = useState('');
+  const [ctfImage, setCtfImage] = useState(0);
   const [savedLocally, setSavedLocally] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Set<string>>(new Set());
@@ -204,11 +207,36 @@ export default function RecruitmentForm() {
 
   const resetForm = () => {
     setStatus('idle');
+    setCtfOpen(false);
+    setCtfCommand('');
+    setCtfImage(0);
     setFormData(EMPTY_FORM);
     setErrors({});
     setTouched(new Set());
     setSubmitAttempted(false);
     setSavedLocally(false);
+  };
+
+  const openCtf = () => {
+    setCtfOpen(true);
+    setCtfCommand('');
+    setCtfImage(0);
+  };
+
+  const submitCtfCommand = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (ctfCommand.trim() === 'nmap -sV 192.168.18.27') {
+      setCtfImage(1);
+    }
+  };
+
+  const advanceCtf = () => {
+    if (ctfImage === 4) {
+      setCtfOpen(false);
+      document.getElementById('team')?.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    setCtfImage((current) => current + 1);
   };
 
   // ── Success state ──────────────────────────────────────────────────────────
@@ -243,10 +271,75 @@ export default function RecruitmentForm() {
               )}
             </div>
           )}
-          <button onClick={resetForm} className="comic-btn comic-btn-outline text-sm">
-            SUBMIT ANOTHER
-          </button>
+          <div className="flex flex-wrap justify-center gap-3">
+            <button onClick={resetForm} className="comic-btn comic-btn-outline text-sm">
+              SUBMIT ANOTHER
+            </button>
+            <button onClick={openCtf} className="comic-btn text-sm inline-flex items-center gap-2">
+              <Terminal className="w-4 h-4" aria-hidden="true" />
+              PLAY CTF
+            </button>
+          </div>
         </div>
+
+        {ctfOpen && (
+          <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="ctf-title"
+          >
+            <div className="w-full max-w-3xl border-2 border-green-500/70 bg-[#090d09] shadow-[8px_8px_0_#000]">
+              <div className="flex items-center justify-between border-b border-green-500/40 px-4 py-3 text-green-400">
+                <h2 id="ctf-title" className="font-mono text-sm tracking-widest">DEADPOOL@CTF:~$</h2>
+                <button
+                  onClick={() => setCtfOpen(false)}
+                  className="text-green-400 transition-colors hover:text-white"
+                  aria-label="Close CTF"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              {ctfImage === 0 ? (
+                <form onSubmit={submitCtfCommand} className="p-5 font-mono text-sm text-green-400">
+                  <p className="mb-2">Target discovered: 192.168.18.27</p>
+                  <p className="mb-4 text-green-300/70">Scan the version to continue.</p>
+                  <label className="flex items-center gap-2">
+                    <span aria-hidden="true">$</span>
+                    <input
+                      autoFocus
+                      value={ctfCommand}
+                      onChange={(event) => setCtfCommand(event.target.value)}
+                      className="min-w-0 flex-1 bg-transparent text-green-300 outline-none"
+                      aria-label="CTF terminal command"
+                      spellCheck={false}
+                      autoComplete="off"
+                    />
+                  </label>
+                  {ctfCommand && ctfCommand.trim() !== 'nmap -sV 192.168.18.27' && (
+                    <p className="mt-4 text-comic-red">Command not recognized. Try again.</p>
+                  )}
+                </form>
+              ) : (
+                <button
+                  onClick={advanceCtf}
+                  className="group block w-full cursor-pointer bg-black p-3 text-left"
+                  aria-label={ctfImage === 4 ? 'Finish CTF and open Chapter 6' : `Open Pop-${ctfImage + 1}`}
+                >
+                  <img
+                    src={`${import.meta.env.BASE_URL}Pop-${ctfImage}.jpg`}
+                    alt={`CTF discovery ${ctfImage} of 4`}
+                    className="mx-auto max-h-[72vh] w-auto max-w-full object-contain transition-transform group-hover:scale-[1.01]"
+                  />
+                  <span className="mt-3 block text-center font-mono text-xs text-green-400/70">
+                    POP-{ctfImage} // TOUCH TO CONTINUE
+                  </span>
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     );
   }
