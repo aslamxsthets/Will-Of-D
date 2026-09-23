@@ -42,6 +42,7 @@ export default function RecruitmentForm() {
   const [ctfOpen, setCtfOpen] = useState(false);
   const [ctfCommand, setCtfCommand] = useState('');
   const [ctfImage, setCtfImage] = useState(0);
+  const [ctfWrongCommand, setCtfWrongCommand] = useState(false);
   const [savedLocally, setSavedLocally] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Set<string>>(new Set());
@@ -210,6 +211,7 @@ export default function RecruitmentForm() {
     setCtfOpen(false);
     setCtfCommand('');
     setCtfImage(0);
+    setCtfWrongCommand(false);
     setFormData(EMPTY_FORM);
     setErrors({});
     setTouched(new Set());
@@ -221,13 +223,18 @@ export default function RecruitmentForm() {
     setCtfOpen(true);
     setCtfCommand('');
     setCtfImage(0);
+    setCtfWrongCommand(false);
   };
 
   const submitCtfCommand = (event: React.FormEvent) => {
     event.preventDefault();
     if (ctfCommand.trim() === 'nmap -sV 192.168.18.27') {
       setCtfImage(1);
+      setCtfWrongCommand(false);
+      return;
     }
+
+    setCtfWrongCommand(true);
   };
 
   const advanceCtf = () => {
@@ -310,15 +317,26 @@ export default function RecruitmentForm() {
                     <input
                       autoFocus
                       value={ctfCommand}
-                      onChange={(event) => setCtfCommand(event.target.value)}
+                      onChange={(event) => {
+                        setCtfCommand(event.target.value);
+                        if (ctfWrongCommand) {
+                          setCtfWrongCommand(false);
+                        }
+                      }}
                       className="min-w-0 flex-1 bg-transparent text-green-300 outline-none"
                       aria-label="CTF terminal command"
                       spellCheck={false}
                       autoComplete="off"
                     />
                   </label>
-                  {ctfCommand && ctfCommand.trim() !== 'nmap -sV 192.168.18.27' && (
-                    <p className="mt-4 text-comic-red">Command not recognized. Try again.</p>
+                  {ctfWrongCommand && (
+                    <div className="mt-4">
+                      <img
+                        src={`${import.meta.env.BASE_URL}else-pop.jpg`}
+                        alt="Wrong command result"
+                        className="mx-auto max-h-52 w-auto rounded border border-comic-red/60 bg-black/40 object-contain p-2"
+                      />
+                    </div>
                   )}
                 </form>
               ) : (
