@@ -75,26 +75,26 @@ export default function Hero() {
       {/* ── TOP BAR ─────────────────────────────────────────────────────────── */}
       {/* Sits just below the fixed navbar (pt-20). Deadpool's face/mask/gun    */}
       {/* sit roughly in the 30–70% vertical band — this bar stays above that.  */}
-      <div className="relative z-10 flex flex-wrap items-start justify-between gap-3 px-6 md:px-12 pt-3">
-        <span className="comic-caption text-xs md:text-sm tracking-widest mt-1">
+      <div className="relative z-10 flex flex-col items-start gap-3 px-4 sm:flex-row sm:items-start sm:justify-between sm:px-6 md:px-12 pt-3">
+        <span className="comic-caption text-[10px] sm:text-xs md:text-sm tracking-widest mt-1">
           ISSUE #01 • FIRST EDITION
         </span>
 
         {/* ── EASTER EGG TRIGGER + BUBBLE ─────────────────────────────────── */}
         {/* The bubble opens DOWNWARD from the button so it never overlaps the  */}
         {/* fixed navbar above.                                                  */}
-        <div className="relative">
+        <div className="relative w-full sm:w-auto">
           <button
             type="button"
             onClick={triggerDeadpoolQuote}
-            className={`group flex items-center gap-2 bg-comic-black/90 hover:bg-comic-black py-1.5 px-3 rounded-full border-2 border-comic-red hover:border-comic-yellow transition-all duration-200 cursor-pointer shadow-[3px_3px_0px_#000] ${
+            className={`group flex items-center gap-2 bg-comic-black/90 hover:bg-comic-black py-1.5 px-3 rounded-full border-2 border-comic-red hover:border-comic-yellow transition-all duration-200 cursor-pointer shadow-[3px_3px_0px_#000] max-w-full ${
               isWobbling ? 'scale-95 rotate-6' : 'hover:scale-105 active:scale-95'
             }`}
             aria-label="Poke Deadpool for a 4th-wall breaking quote"
             title="Poke Deadpool!"
           >
             <DeadpoolLogo size="sm" withSwords={true} animated={true} />
-            <span className="font-[var(--font-comic-display)] text-xs md:text-sm text-comic-yellow tracking-wider">
+            <span className="font-[var(--font-comic-display)] text-[10px] sm:text-xs md:text-sm text-comic-yellow tracking-wider whitespace-nowrap">
               ⚡ POKE ME!
             </span>
           </button>
@@ -105,7 +105,7 @@ export default function Hero() {
               role="status"
               aria-live="polite"
               onClick={triggerDeadpoolQuote}
-              className="absolute top-full mt-3 right-0 z-50 w-72 sm:w-80 bg-white text-comic-black p-4 rounded-xl border-4 border-comic-red shadow-[5px_5px_0px_#000000] cursor-pointer animate-dp-bubble-in"
+              className="absolute top-full mt-3 left-1/2 -translate-x-1/2 z-50 w-[min(18rem,calc(100vw-2rem))] sm:left-auto sm:right-0 sm:translate-x-0 sm:w-72 md:w-80 bg-white text-comic-black p-4 rounded-xl border-4 border-comic-red shadow-[5px_5px_0px_#000000] cursor-pointer animate-dp-bubble-in"
               title="Click for another quote!"
             >
               {/* Bubble tail — points UP to the button */}
