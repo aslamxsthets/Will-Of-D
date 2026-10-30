@@ -26,7 +26,7 @@ export const teamMembers: TeamMember[] = [
     socials: {
       github: 'https://github.com/aslamxsthets/',
       linkedin: 'https://www.linkedin.com/in/aj49/',
-      portfolio: 'https://aslamxsthets.github.io/Portfolio-Gear5/',
+      portfolio: 'https://aslamxsthets.github.io/Portfolio-SA/',
     },
   },
   {
